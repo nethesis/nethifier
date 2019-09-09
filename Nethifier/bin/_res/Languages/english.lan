@@ -1,0 +1,60 @@
+#INSTALLATION MESSAGES
+INS_001: {PROD_NAME} è attualmente in esecuzione, vuoi continuare con l'installazione?
+INS_002: {PROD_NAME} è attualmente in esecuzione, vuoi forzare la disinstallazione?
+INS_003: Installation of {PROD_NAME} completed successfully.
+INS_004: Installation of {PROD_NAME} was aborted.
+INS_005: Uninstallation of {PROD_NAME} completed successfully.
+INS_006: Uninstallation of {PROD_NAME} was aborted.
+INS_007: Choose or create folder for {PROD_NAME}
+INS_018: Folder [{PROD_FOLDER}] does not exist, create it?
+INS_019: Il {PROD_NAME} è stato rimosso dal profilo {USER_NAME}.
+#CAPTION
+INS_008: Select folder for {PROD_NAME}
+#CHECKBOX
+INS_009: Install to all users
+INS_010: Create desktop icon
+INS_011: Load on windows startup
+INS_015: Delete user data
+#BUTTON
+INS_012: Install
+INS_013: Cancel
+INS_014: Uninstall
+INS_016: Run
+INS_017: Choose your language
+
+#CONFIGURATION MESSAGES
+#BUTTON
+CONF_001: Connect
+CONF_002: Save
+CONF_003: Server IP Address
+CONF_004: Disconnect
+CONF_005: Start on windows
+CONF_006: Automatic Login
+CONF_007: Server Port
+CONF_008: Close notify after (seconds)
+CONF_009: Authentication
+CONF_010: User
+CONF_011: Password
+CONF_012: URL
+CONF_013: IP
+CONF_014: Mode
+CONF_015: Run
+CONF_016: Command
+
+#STATUS_BAR
+STAT_001: Connected
+STAT_002: Disconnected
+
+#TABS
+TAB_001: Configuration
+TAB_002: Server messages
+TAB_003: Error Log
+TAB_004: Run With
+
+#CONTEXT_MENU
+CTX_001: &Exit
+CTX_002: &Hide
+CTX_003: &Show
+CTX_004: &Connect
+CTX_005: &Disconnect
+CTX_006: &Language

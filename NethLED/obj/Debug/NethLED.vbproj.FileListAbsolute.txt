@@ -1,0 +1,17 @@
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethLED.exe.config
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethLED.exe
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethLED.pdb
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethLED.xml
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethUtilities.dll
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethUtilities.pdb
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\NethUtilities.xml
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.vbprojResolveAssemblyReference.cache
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.Form1.resources
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.Resources.resources
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.vbproj.GenerateResource.Cache
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.vbproj.CoreCompileInputs.cache
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.exe
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.xml
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\obj\Debug\NethLED.pdb
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\HidLibrary.dll
+C:\Projects\Source\Workspaces\Neth-Dev\NethLED\bin\Debug\LuxaforSharp.dll
