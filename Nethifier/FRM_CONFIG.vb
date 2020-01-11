@@ -187,7 +187,8 @@ Friend Class FRM_CONFIG
                             Case Is = "OPEN"
                                 .Commands = Config.Commands
                                 If .AddNotification(ID:=ID, URL:=URL, Width:=WIDTH, Height:=HEIGHT, Expiration:=EXP) Then
-                                    NOTIFY.Icon = GetIcon("chat")
+                                    'NOTIFY.Icon = GetIcon("chat")
+                                    NOTIFY.Icon = Nethifier.My.Resources.Resources.chat
                                     StartRinging()
 
                                 Else
@@ -197,7 +198,9 @@ Friend Class FRM_CONFIG
                                 .CloseNotification(ID)
 
                                 If .GetNotificationCount <= 0 Then
-                                    NOTIFY.Icon = GetIcon("online")
+                                    'NOTIFY.Icon = GetIcon("online")
+                                    'NOTIFY.Icon = (Resources.GetObject("NOTIFY.Icon"), System.Drawing.Icon)
+                                    NOTIFY.Icon = Nethifier.My.Resources.Resources.online
                                 End If
                         End Select
                     End With
@@ -311,7 +314,8 @@ Friend Class FRM_CONFIG
                     End If
                     _ClickConnected = False
 
-                    NOTIFY.Icon = GetIcon("online")
+                    'NOTIFY.Icon = GetIcon("online")
+                    NOTIFY.Icon = Nethifier.My.Resources.Resources.online
 
                     With BUT_CONNECT
                         .Enabled = True
@@ -456,7 +460,8 @@ Friend Class FRM_CONFIG
 
         IsLoggedIn = False
         Status = EnumStatus.Disconnected
-        NOTIFY.Icon = GetIcon("offline")
+        'NOTIFY.Icon = GetIcon("offline")
+        NOTIFY.Icon = Nethifier.My.Resources.Resources.offline
 
         PingServer.Enabled = False
 
@@ -495,7 +500,7 @@ Friend Class FRM_CONFIG
         CMB_MODE.Enabled = Enabled
         'NUM_NOTIFICA.Enabled = Enabled
         'AUTO_LOGIN.Enabled = Enabled
-        'STARTUP.Enabled = Enabled
+        STARTUP.Enabled = FALSE
         'BUT_SAVE.Enabled = Enabled
     End Sub
 
@@ -562,7 +567,7 @@ Friend Class FRM_CONFIG
         End If
         'Debug
 
-        Me.Icon = GetIcon("panel")
+        Me.Icon = Nethifier.My.Resources.Resources.panel
 
         'tmrPoll.Start()
         Me.Text = Application.ProductName
@@ -624,7 +629,8 @@ Friend Class FRM_CONFIG
             Dim Files() As String = IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup))
             For I As Integer = 0 To Files.Length - 1
                 If LinkHelper.ResolveShortcut(Files(I)).ToLower = Application.ExecutablePath.ToLower Then
-                    STARTUP.Checked = True
+                    'STARTUP.Checked = True
+                    STARTUP.Checked = False
                     STARTUP.Enabled = False
                     Exit For
                 End If
@@ -780,7 +786,6 @@ Friend Class FRM_CONFIG
     Private _ClickConnected As Boolean
     Private Sub BUT_CONNECT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BUT_CONNECT.Click, ConnectToolStripMenuItem.Click
         'L'autoconnessione funzionerà solo se la disconnessione è provocata senza intervento dell'utente
-
 
         If Not Me.IsLoggedIn AndAlso TMR_ELAPSE.Enabled Then
             InteruptReconnection()
@@ -1236,6 +1241,9 @@ Friend Class FRM_CONFIG
 
     Private Sub BUT_SAVE_Click(sender As Object, e As EventArgs) Handles BUT_SAVE.Click
         RegEdit(False)
+        If My.Application.CommandLineArgs.Contains("-R") Then
+            Application.Exit()
+        End If
     End Sub
 
     Private Sub RegEdit(IsAutoSave As Boolean)
@@ -1399,6 +1407,11 @@ Friend Class FRM_CONFIG
             With Proc
                 .UseShellExecute = True
                 .WorkingDirectory = Environment.CurrentDirectory
+                '.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "\" & Application.ProductName
+                '.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) & "\Nethesis\" & Application.ProductName
+                '.WorkingDirectory = Application.StartupPath
+
+                '.WorkingDirectory = Path.GetFileName(Application.StartupPath)
                 .FileName = "NethLED.exe"
 
                 Dim Args As String = ""
@@ -1409,13 +1422,21 @@ Friend Class FRM_CONFIG
                 .Arguments = Args
                 '.Verb = "runas"
             End With
-            LED_Proc = Process.Start(Proc)
+            If My.Computer.FileSystem.FileExists(Proc.WorkingDirectory + "/" + Proc.FileName) Then
+                LED_Proc = Process.Start(Proc)
+            Else
+                Console.WriteLine(Proc.WorkingDirectory + "/" + Proc.FileName)
+                'MsgBox("NethLED file not found.")
+                Application.Exit()
+            End If
+
         Catch ex As Exception
-            MessageBox.Show(ex.Message)
+            MessageBox.Show(ex.Message + ":NetLED")
         Finally
         End Try
 
-        NOTIFY.Icon = GetIcon("offline")
+        NOTIFY.Icon = Nethifier.My.Resources.Resources.offline
+
     End Sub
 
     Private Sub SetCaptions()
@@ -1471,7 +1492,9 @@ Friend Class FRM_CONFIG
 
     Private Sub Notifications_VisibleChanged(sender As Object, e As EventArgs) Handles Notifications.VisibleChanged
         If Notifications.GetNotificationCount <= 0 Then
-            NOTIFY.Icon = GetIcon("online")
+            'NOTIFY.Icon = GetIcon("online")
+            NOTIFY.Icon = Nethifier.My.Resources.Resources.online
+
         End If
     End Sub
 
@@ -1655,7 +1678,18 @@ Friend Class FRM_CONFIG
     End Sub
 
     Private Sub TMR_ICONS_Tick(sender As Object, e As EventArgs) Handles TMR_ICONS.Tick
-        NOTIFY.Icon = GetIcon("reconnect_" & TMR_ICONS.Tag.ToString)
+        'NOTIFY.Icon = GetIcon("reconnect_" & TMR_ICONS.Tag.ToString) 
+        Select Case TMR_ICONS.Tag.ToString
+            Case "1"
+                NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_1
+            Case "2"
+                NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_2
+            Case "3"
+                NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_3
+            Case Else
+                NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_4
+        End Select
+
         TMR_ICONS.Tag = CInt(TMR_ICONS.Tag) + 1
         If CInt(TMR_ICONS.Tag) > 4 Then
             TMR_ICONS.Tag = 1
@@ -1705,7 +1739,7 @@ Friend Class FRM_CONFIG
         End With
     End Sub
 
-    Private Sub KeyDown(sender As Object, e As KeyEventArgs) Handles TXT_SPEEDDIAL_HOTKEY.KeyDown, TXT_REDIAL_HOTKEY.KeyDown
+    Private Shadows Sub KeyDown(sender As Object, e As KeyEventArgs) Handles TXT_SPEEDDIAL_HOTKEY.KeyDown, TXT_REDIAL_HOTKEY.KeyDown
         Dim T As TextBox = DirectCast(sender, TextBox)
         If e.KeyCode >= Keys.F9 AndAlso e.KeyCode <= Keys.F12 Then
             T.Text = e.KeyCode.ToString.ToUpper
@@ -1963,6 +1997,9 @@ Friend Class FRM_CONFIG
         End If
     End Sub
 
+    Private Sub FRM_CONFIG_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+
+    End Sub
 
     'FOR DIALER
 End Class

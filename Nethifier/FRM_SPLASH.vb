@@ -19,38 +19,22 @@ Public NotInheritable Class FRM_SPLASH
 
         Dim RunningProcess As Process = Nothing
 
-        Me.BUT_EXIT.Image = GetImage("close.gif")
+        Try
+            'Me.BUT_EXIT.Image = GetImage("close.gif")
+            Me.BUT_EXIT.Image = Nethifier.My.Resources.Resources.close
+        Catch ex As Exception
+            Console.WriteLine("No close img")
+        End Try
 
-        If My.Application.CommandLineArgs.Count <= 0 OrElse My.Application.CommandLineArgs.Contains("-e") Then
-            'Do single process control
-            Dim Folder As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
-            Dim FN As String = Folder & "\token.tkn"
-
-            'Dim S As String
-            'Dim T As String = "fzgc.tznvy.pbz"
-            'For I = 0 To T.Length - 1
-            '    If Trim(S) <> "" Then
-            '        S += " + "
-            '    End If
-            '    S += "Chr(" & Asc(T.Substring(I, 1)) & ")"
-            'Next
-
-            'Dim FN As String = Application.StartupPath & "\token.tkn"
-            If File.Exists(FN) Then
-                Try
-                    File.Delete(FN)
-                Catch ex As Exception
-                    'Process already running
-                    Application.Exit()
-                    Exit Sub
-                End Try
-            End If
-            If Not Directory.Exists(Folder) Then
-                Directory.CreateDirectory(Folder)
-            End If
-            TokenStream = New FileStream(FN, FileMode.Create)
+        If My.Application.CommandLineArgs.Contains("-R") Then
+            RunAs("-e")
+            Application.Exit()
         End If
 
+        If Not My.Computer.FileSystem.FileExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() & "\" & Application.ProductName & "\config.ini") And Not My.Application.CommandLineArgs.Contains("-e") Then
+            RunAs("-e")
+            Application.Exit()
+        End If
 
         Opacity = 100
 
@@ -122,7 +106,11 @@ Public NotInheritable Class FRM_SPLASH
                         Uninstaller.Action = CLS_INSTALLER.Action.Uninstall
                         Uninstaller.Show()
 
-                        Me.BUT_EXIT.Image.Dispose()
+                        Try
+                            Me.BUT_EXIT.Image.Dispose()
+                        Catch ex As Exception
+                            Console.WriteLine("No exit img")
+                        End Try
 
                         Me.Dispose()
                     Else
@@ -157,28 +145,29 @@ Public NotInheritable Class FRM_SPLASH
 
                     'Reloaded
                     If Helper.IsRunAsAdmin Then
-                        Dim ApplicationPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
-                        Dim Lang As String() = IO.Directory.GetFiles(Application.StartupPath & "\languages")
-                        For I As Integer = 0 To Lang.Length - 1
-                            Dim X As Integer = Lang(I).LastIndexOf("\")
-                            IO.File.Copy(Lang(I), ApplicationPath & "\languages" & Lang(I).Substring(X, Lang(I).Length - X), True)
-                        Next
+                        'Dim ApplicationPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
+                        'Dim Lang As String() = IO.Directory.GetFiles(Application.StartupPath & "\languages")
+                        'For I As Integer = 0 To Lang.Length - 1
+                        'Dim X As Integer = Lang(I).LastIndexOf("\")
+                        'IO.File.Copy(Lang(I), ApplicationPath & "\languages" & Lang(I).Substring(X, Lang(I).Length - X), True)
+                        'Next
 
-                        Dim Res As String() = Directory.GetFiles(Application.StartupPath & "\resources")
-                        For I As Integer = 0 To Res.Length - 1
-                            Dim X As Integer = Res(I).LastIndexOf("\")
-                            IO.File.Copy(Res(I), ApplicationPath & "\resources" & Res(I).Substring(X, Res(I).Length - X), True)
-                        Next
+                        'Dim Res As String() = Directory.GetFiles(Application.StartupPath & "\resources")
+                        'For I As Integer = 0 To Res.Length - 1
+                        'Dim X As Integer = Res(I).LastIndexOf("\")
+                        'IO.File.Copy(Res(I), ApplicationPath & "\resources" & Res(I).Substring(X, Res(I).Length - X), True)
+                        'Next
 
-                        Dim Version As String = IO.Path.Combine(Application.StartupPath, "Version.inf")
-                        If File.Exists(Version) Then
-                            IO.File.Copy(Version, IO.Path.Combine(ApplicationPath, "Version.inf"), True)
-                        End If
+                        '
+                        'Dim Version As String = IO.Path.Combine(Application.StartupPath, "Version.inf")
+                        'If File.Exists(Version) Then
+                        '                        IO.File.Copy(Version, IO.Path.Combine(ApplicationPath, "Version.inf"), True)
+                        'End If
 
-                        Dim UpdateURL As String = IO.Path.Combine(Application.StartupPath, "Update.url")
-                        If File.Exists(UpdateURL) Then
-                            IO.File.Copy(UpdateURL, IO.Path.Combine(ApplicationPath, "Update.url"), True)
-                        End If
+                        'Dim UpdateURL As String = IO.Path.Combine(Application.StartupPath, "Update.url")
+                        'If File.Exists(UpdateURL) Then
+                        'IO.File.Copy(UpdateURL, IO.Path.Combine(ApplicationPath, "Update.url"), True)
+                        'End If
 
                         ReloadSettings()
 
@@ -228,15 +217,16 @@ Public NotInheritable Class FRM_SPLASH
                 ApplicationTitle.Text = System.IO.Path.GetFileNameWithoutExtension(My.Application.Info.AssemblyName)
             End If
 
-            Dim VersionInfo As Version = New Version
-            With VersionInfo
-                Version.Text = String.Format("Version {0}", .Major & "." & .Minor & "." & .Build)
-                Copyright.Text = .Copyright
-            End With
+            'Dim VersionInfo As Version = New Version
+            'With VersionInfo
+            ' 'Version.Text = String.Format("Version {0}", .Major & "." & .Minor & "." & .Build)
+            'Version.Text = My.Application.Info.Version.ToString()
+            'Copyright.Text = .Copyright
+            'End With
 
-            'Version.Text = System.String.Format(Version.Text, My.Application.Info.Version.Major, My.Application.Info.Version.Minor)
+            Version.Text = System.String.Format(Version.Text, My.Application.Info.Version.Major, My.Application.Info.Version.Minor)
             'Copyright info
-            'Copyright.Text = My.Application.Info.Copyright
+            Copyright.Text = My.Application.Info.Copyright
 
         Else
             'MessageBox.Show("RELOADED")
@@ -260,7 +250,7 @@ Public NotInheritable Class FRM_SPLASH
     End Sub
 
     Private Sub ReloadSettings()
-        If My.Application.CommandLineArgs.Contains("-r") Then
+        If (My.Application.CommandLineArgs.Contains("-r") And My.Computer.FileSystem.FileExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() & "\" & Application.ProductName & "\config.ini")) Then
             Config = New Config(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName)
         Else
             Config = New Config
@@ -282,24 +272,25 @@ Public NotInheritable Class FRM_SPLASH
     Private Function DoAdminCheck() As Boolean
         'Do first execution check
         If My.Application.CommandLineArgs.Count = 0 Then
+            RunAs("-m")
             Return False
         End If
 
         Dim ApplicationPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
         Dim DoAdminExec As Boolean = False
 
-        If Not Directory.Exists(ApplicationPath) Then
-            DoAdminExec = True
-            Directory.CreateDirectory(ApplicationPath)
-        End If
-        If Not Directory.Exists(ApplicationPath & "\languages") Then
-            DoAdminExec = True
-            Directory.CreateDirectory(ApplicationPath & "\languages")
-        End If
-        If Not Directory.Exists(ApplicationPath & "\resources") Then
-            DoAdminExec = True
-            Directory.CreateDirectory(ApplicationPath & "\resources")
-        End If
+        'If Not Directory.Exists(ApplicationPath) Then
+        'DoAdminExec = True
+        'Directory.CreateDirectory(ApplicationPath)
+        'End If
+        'If Not Directory.Exists(ApplicationPath & "\languages") Then
+        ' DoAdminExec = True
+        'Directory.CreateDirectory(ApplicationPath & "\languages")
+        'End If
+        'If Not Directory.Exists(ApplicationPath & "\resources") Then
+        'DoAdminExec = True
+        'Directory.CreateDirectory(ApplicationPath & "\resources")
+        'End If
         Return DoAdminExec
     End Function
 
@@ -351,5 +342,13 @@ Public NotInheritable Class FRM_SPLASH
         BUT_INSTALL.Text = Msg.GetMessage("INS_012")
         BUT_RUN.Text = Msg.GetMessage("INS_016")
         LBL_LANG.Text = Msg.GetMessage("INS_017")
+    End Sub
+
+    Private Sub MainLayoutPanel_Paint(sender As Object, e As PaintEventArgs) Handles MainLayoutPanel.Paint
+
+    End Sub
+
+    Private Sub ApplicationTitle_Click(sender As Object, e As EventArgs) Handles ApplicationTitle.Click
+
     End Sub
 End Class

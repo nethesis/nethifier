@@ -50,6 +50,11 @@ Public Class FRM_INSTALLER
 
             Me.Height = 118
         End If
+
+        If My.Application.CommandLineArgs.Contains("-m") Then
+            CHK_ALL_USERS.Enabled = False
+        End If
+
     End Sub
 
     Private Sub BUT_INSTALL_Click(sender As Object, e As EventArgs) Handles BUT_INSTALL.Click

@@ -102,65 +102,65 @@ Friend Class CLS_INSTALLER
 
         Dim Proceed As Boolean = True
 
-        Try
-            Dim Dir() As String = Directory.GetDirectories(Path)
-            Dim Files() As String = Directory.GetFiles(Path)
+        'Try
+        '    Dim Dir() As String = Directory.GetDirectories(Path)
+        '    Dim Files() As String = Directory.GetFiles(Path)
 
-            For I As Integer = 0 To Dir.Length - 1
-                If Not DeleteFiles(Dir(I), SuccedLog, FailedLog, DeleteConfig) Then
-                    Proceed = False
-                End If
-            Next
+        '    For I As Integer = 0 To Dir.Length - 1
+        '        If Not DeleteFiles(Dir(I), SuccedLog, FailedLog, DeleteConfig) Then
+        '            Proceed = False
+        '        End If
+        '    Next
 
-            Dim IgnoreFiles = New Hashtable
-            Dim SP As String = Application.StartupPath.ToLower
+        '    Dim IgnoreFiles = New Hashtable
+        '    Dim SP As String = Application.StartupPath.ToLower
 
-            With IgnoreFiles
-                .Add(SP & "nethifier.exe", "")
-                .Add(SP & "nethutilities.dll", "")
-            End With
+        '    With IgnoreFiles
+        '        .Add(SP & "nethifier.exe", "")
+        '        .Add(SP & "nethutilities.dll", "")
+        '    End With
 
-            For I As Integer = 0 To Files.Length - 1
-                If Not IgnoreFiles.ContainsKey(Files(I).ToLower.Trim) Then
-                    If Files(I).ToLower <> Application.ExecutablePath.ToLower Then
-                        Try
-                            If Not DeleteConfig AndAlso Files(I).Trim.ToLower.EndsWith("\config.ini") Then
-                                'ByPass
-                            Else
-                                IO.File.Delete(Files(I))
-                                SuccedLog += "File deleted: " & Files(I) & vbCrLf
-                            End If
-                        Catch ex As Exception
-                            FailedLog += "**********************************************" & vbCrLf
-                            FailedLog += "Can't delete this file:" & Files(I) & vbCrLf
-                            FailedLog += "Reason: " & ex.Message & vbCrLf
-                            FailedLog += "**********************************************" & vbCrLf
+        '    For I As Integer = 0 To Files.Length - 1
+        '        If Not IgnoreFiles.ContainsKey(Files(I).ToLower.Trim) Then
+        '            If Files(I).ToLower <> Application.ExecutablePath.ToLower Then
+        '                Try
+        '                    If Not DeleteConfig AndAlso Files(I).Trim.ToLower.EndsWith("\config.ini") Then
+        '                        'ByPass
+        '                    Else
+        '                        IO.File.Delete(Files(I))
+        '                        SuccedLog += "File deleted: " & Files(I) & vbCrLf
+        '                    End If
+        '                Catch ex As Exception
+        '                    FailedLog += "**********************************************" & vbCrLf
+        '                    FailedLog += "Can't delete this file:" & Files(I) & vbCrLf
+        '                    FailedLog += "Reason: " & ex.Message & vbCrLf
+        '                    FailedLog += "**********************************************" & vbCrLf
 
-                            Proceed = False
-                        End Try
-                    End If
-                End If
-            Next
+        '                    Proceed = False
+        '                End Try
+        '            End If
+        '        End If
+        '    Next
 
-            Try
-                If IO.Directory.GetFiles(Path).Length = 0 Then
-                    IO.Directory.Delete(Path)
-                    SuccedLog += "Directory deleted: " & Path & vbCrLf
-                Else
-                    SuccedLog += "This directory can be deleted manually: " & Path & vbCrLf
-                End If
-            Catch ex As Exception
-                FailedLog += "**********************************************" & vbCrLf
-                FailedLog += "Can't delete this folder:" & Path & vbCrLf
-                FailedLog += "Reason: " & ex.Message & vbCrLf
-                FailedLog += "**********************************************" & vbCrLf
+        '    Try
+        '        If IO.Directory.GetFiles(Path).Length = 0 Then
+        '            IO.Directory.Delete(Path)
+        '            SuccedLog += "Directory deleted: " & Path & vbCrLf
+        '        Else
+        '            SuccedLog += "This directory can be deleted manually: " & Path & vbCrLf
+        '        End If
+        '    Catch ex As Exception
+        '        FailedLog += "**********************************************" & vbCrLf
+        '        FailedLog += "Can't delete this folder:" & Path & vbCrLf
+        '        FailedLog += "Reason: " & ex.Message & vbCrLf
+        '        FailedLog += "**********************************************" & vbCrLf
 
-                Proceed = False
-            End Try
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, Msg_INS_014, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Proceed = False
-        End Try
+        '        Proceed = False
+        '    End Try
+        'Catch ex As Exception
+        '    MessageBox.Show(ex.Message, Msg_INS_014, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '    Proceed = False
+        'End Try
 
         Return Proceed
     End Function
@@ -213,30 +213,31 @@ Friend Class CLS_INSTALLER
                     Conf.Save()
                 End If
 
-                Path = Application.StartupPath
-                If IO.File.Exists(Path & "\installation.log") Then
-                    Dim Log As InstallationInfo = New InstallationInfo(Path)
-                    Dim Val As String() = Log.ReadAllLines
-                    For X = 0 To Val.Length - 1
-                        Dim F As String = Val(X)
-                        If IO.Directory.Exists(F) Then
-                            DeleteFiles(F, SuccedLog, FailedLog, DeleteConfig)
-                        ElseIf IO.File.Exists(F) Then
-                            IO.File.Delete(F)
-                        End If
-                    Next
-                End If
 
-
-                ''2017/04/09 Jomar
-                'If Not DeleteFiles(Path, SuccedLog, FailedLog, DeleteConfig) Then
-                '    If Trim(FailedLog) <> "" Then
-                '        MessageBox.Show(FailedLog, Msg_INS_014, MessageBoxButtons.OK, MessageBoxIcon.Error)
-                '        Return False
-                '    End If
+                'Nick 28/11/2019
+                'Path = Application.StartupPath
+                'If IO.File.Exists(Path & "\installation.log") Then
+                '    Dim Log As InstallationInfo = New InstallationInfo(Path)
+                '    Dim Val As String() = Log.ReadAllLines
+                '    For X = 0 To Val.Length - 1
+                '        Dim F As String = Val(X)
+                '        If IO.Directory.Exists(F) Then
+                '            DeleteFiles(F, SuccedLog, FailedLog, DeleteConfig)
+                '        ElseIf IO.File.Exists(F) Then
+                '            IO.File.Delete(F)
+                '        End If
+                '    Next
                 'End If
+
                 ''2017/04/09 Jomar
-                UninstallBatchFile.CreateBatch(Application.StartupPath)
+                ''If Not DeleteFiles(Path, SuccedLog, FailedLog, DeleteConfig) Then
+                ''    If Trim(FailedLog) <> "" Then
+                ''        MessageBox.Show(FailedLog, Msg_INS_014, MessageBoxButtons.OK, MessageBoxIcon.Error)
+                ''        Return False
+                ''    End If
+                ''End If
+                ''2017/04/09 Jomar
+                'UninstallBatchFile.CreateBatch(Application.StartupPath)
 
 
                 Dim RegKey As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\Microsoft\Nethesis\" & Application.ProductName)
@@ -299,148 +300,151 @@ Friend Class CLS_INSTALLER
             End If
         End If
 
-        IO.File.Copy(Application.ExecutablePath, ExePath, True)
-        IO.File.Copy(Application.StartupPath & "\HidLibrary.dll", ProgramFileFolder & "\HidLibrary.dll", True)
-        IO.File.Copy(Application.StartupPath & "\LuxaforSharp.dll", ProgramFileFolder & "\LuxaforSharp.dll", True)
-        IO.File.Copy(Application.StartupPath & "\NAudio.dll", ProgramFileFolder & "\NAudio.dll", True)
-        IO.File.Copy(Application.StartupPath & "\NethLED.exe", ProgramFileFolder & "\NethLED.exe", True)
-        IO.File.Copy(Application.StartupPath & "\NethDialer.exe", ProgramFileFolder & "\NethDialer.exe", True)
-        IO.File.Copy(Application.StartupPath & "\NethUtilities.dll", ProgramFileFolder & "\NethUtilities.dll", True)
-        IO.File.Copy(Application.StartupPath & "\Newtonsoft.Json.dll", ProgramFileFolder & "\Newtonsoft.Json.dll", True)
-        IO.File.Copy(Application.StartupPath & "\ringer.mp3", ProgramFileFolder & "\ringer.mp3", True)
-        '
-        IO.File.Copy(Application.StartupPath & "\Version.inf", ProgramFileFolder & "\Version.inf", True)
+        ' Nick 28/11/2019
+        'IO.File.Copy(Application.ExecutablePath, ExePath, True)
+        'IO.File.Copy(Application.StartupPath & "\HidLibrary.dll", ProgramFileFolder & "\HidLibrary.dll", True)
+        'IO.File.Copy(Application.StartupPath & "\LuxaforSharp.dll", ProgramFileFolder & "\LuxaforSharp.dll", True)
+        'IO.File.Copy(Application.StartupPath & "\NAudio.dll", ProgramFileFolder & "\NAudio.dll", True)
+        'IO.File.Copy(Application.StartupPath & "\NethLED.exe", ProgramFileFolder & "\NethLED.exe", True)
+        'IO.File.Copy(Application.StartupPath & "\NethDialer.exe", ProgramFileFolder & "\NethDialer.exe", True)
+        'IO.File.Copy(Application.StartupPath & "\NethUtilities.dll", ProgramFileFolder & "\NethUtilities.dll", True)
+        'IO.File.Copy(Application.StartupPath & "\Newtonsoft.Json.dll", ProgramFileFolder & "\Newtonsoft.Json.dll", True)
+        'IO.File.Copy(Application.StartupPath & "\ringer.mp3", ProgramFileFolder & "\ringer.mp3", True)
+        ''
+        'IO.File.Copy(Application.StartupPath & "\Version.inf", ProgramFileFolder & "\Version.inf", True)
 
-        Dim UpdateURL As String = IO.Path.Combine(Application.StartupPath, "Update.url")
-        If IO.File.Exists(UpdateURL) Then
-            IO.File.Copy(UpdateURL, IO.Path.Combine(ProgramFileFolder, "Update.url"), True)
-        End If
-        'IO.File.Copy(Application.StartupPath & "\Update.url", ProgramFileFolder & "\Update.url", True)
+        'Dim UpdateURL As String = IO.Path.Combine(Application.StartupPath, "Update.url")
+        'If IO.File.Exists(UpdateURL) Then
+        '    IO.File.Copy(UpdateURL, IO.Path.Combine(ProgramFileFolder, "Update.url"), True)
+        'End If
+        ''IO.File.Copy(Application.StartupPath & "\Update.url", ProgramFileFolder & "\Update.url", True)
 
-        UserAppFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName '& "\Languages\"
+        'UserAppFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName '& "\Languages\"
 
-        Dim UserLanguages As String = UserAppFolder & "\languages"
-        Dim UserResources As String = UserAppFolder & "\resources"
-        If Not Directory.Exists(UserAppFolder) Then
-            Directory.CreateDirectory(UserAppFolder)
-        End If
-        If Not Directory.Exists(UserLanguages) Then
-            Directory.CreateDirectory(UserLanguages)
-        End If
-        If Not Directory.Exists(UserResources) Then
-            Directory.CreateDirectory(UserResources)
-        End If
+        'Dim UserLanguages As String = UserAppFolder & "\languages"
+        'Dim UserResources As String = UserAppFolder & "\resources"
+        'If Not Directory.Exists(UserAppFolder) Then
+        '    Directory.CreateDirectory(UserAppFolder)
+        'End If
+        'If Not Directory.Exists(UserLanguages) Then
+        '    Directory.CreateDirectory(UserLanguages)
+        'End If
+        'If Not Directory.Exists(UserResources) Then
+        '    Directory.CreateDirectory(UserResources)
+        'End If
 
-        'Dim Info As InstallationInfo = New InstallationInfo(ProgramFileFolder)
+        ''Dim Info As InstallationInfo = New InstallationInfo(ProgramFileFolder)
+        ''Info.Delete()
+        ''Info.Write(InstallationInfo)
+
+        'InstallationInfo = ""
+
+        'Dim Lang As String() = Directory.GetFiles(Application.StartupPath & "\languages")
+        'For I As Integer = 0 To Lang.Length - 1
+        '    Dim X As Integer = Lang(I).LastIndexOf("\", StringComparison.Ordinal)
+        '    IO.File.Copy(Lang(I), ProgramFileFolder & "\languages" & Lang(I).Substring(X, Lang(I).Length - X), True)
+        '    'NO NEED TO CREATE 
+        '    'IO.File.Copy(Lang(I), UserLanguages & Lang(I).Substring(X, Lang(I).Length - X), True)
+        'Next
+
+        'Dim Res As String() = Directory.GetFiles(Application.StartupPath & "\resources")
+        'For I As Integer = 0 To Res.Length - 1
+        '    Dim X As Integer = Res(I).LastIndexOf("\", StringComparison.Ordinal)
+        '    IO.File.Copy(Res(I), ProgramFileFolder & "\resources" & Res(I).Substring(X, Res(I).Length - X), True)
+        '    'NO NEED TO CREATE 
+        '    'IO.File.Copy(Res(I), UserResources & Res(I).Substring(X, Res(I).Length - X), True)
+        'Next
+
+        'If Not IO.File.Exists(StartMenuPath & "\" & Application.ProductName & ".lnk") Then
+        '    Try
+        '        With DirectCast(shell.CreateShortcut(StartMenuPath & "\" & Application.ProductName & ".lnk"), IWshShortcut)
+        '            .TargetPath = ExePath
+        '            .Arguments = "-e"
+        '            .Description = Application.ProductName
+        '            .WorkingDirectory = ProgramFileFolder
+        '            .IconLocation = ExePath & ", 0"
+        '            .Save()
+        '        End With
+        '    Catch ex As Exception
+        '        MessageBox.Show(ex.Message, Msg.GetMessage("INS_012"), MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '        Return False
+        '    End Try
+        'End If
+
+        'If Not IO.File.Exists(StartMenuPath & "\Uninstall.lnk") Then
+        '    Try
+        '        With DirectCast(shell.CreateShortcut(StartMenuPath & "\Uninstall.lnk"), IWshShortcut)
+        '            .TargetPath = ExePath
+        '            .Arguments = "-u"
+        '            .Description = "Uninstall " & Application.ProductName
+        '            .WorkingDirectory = ProgramFileFolder
+        '            .IconLocation = ProgramFileFolder & "\resources\uninstall.ico"
+        '            .Save()
+        '        End With
+        '    Catch ex As Exception
+        '        MessageBox.Show(ex.Message, Msg.GetMessage("INS_012"), MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '        Return False
+        '    End Try
+        'End If
+        'InstallationInfo += StartMenuPath & vbCrLf
+
+        'If WindowsStartup Then
+        '    If Not IO.File.Exists(StartUpPath & "\" & Application.ProductName & ".lnk") Then
+        '        Try
+        '            With DirectCast(shell.CreateShortcut(StartUpPath & "\" & Application.ProductName & ".lnk"), IWshShortcut)
+        '                .TargetPath = ExePath
+        '                .Arguments = "-e"
+        '                .Description = Application.ProductName
+        '                .WorkingDirectory = ProgramFileFolder
+        '                .IconLocation = ExePath & ", 0"
+        '                .Save()
+        '            End With
+        '        Catch ex As Exception
+        '            MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '            Return False
+        '        End Try
+        '    End If
+        '    InstallationInfo += StartUpPath & "\" & Application.ProductName & ".lnk" & vbCrLf
+        'End If
+
+        'If DesktopShortcut Then
+        '    'Desktop Link
+        '    If Not IO.File.Exists(DesktopPath & "\" & Application.ProductName & ".lnk") Then
+        '        Try
+        '            With DirectCast(shell.CreateShortcut(DesktopPath & "\" & Application.ProductName & ".lnk"), IWshShortcut)
+        '                .TargetPath = ExePath
+        '                .Arguments = "-e"
+        '                .Description = Application.ProductName
+        '                .WorkingDirectory = ProgramFileFolder
+        '                .IconLocation = ExePath & ", 0"
+        '                .Save()
+        '            End With
+        '        Catch ex As Exception
+        '            MessageBox.Show(ex.Message, Msg.GetMessage("INS_012"), MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '            Return False
+        '        End Try
+        '    End If
+        '    InstallationInfo += DesktopPath & "\" & Application.ProductName & ".lnk" & vbCrLf
+        'End If
+
+        ''InstallationInfo += ApplicationPath & vbCrLf
+        'Dim Info As InstallationInfo
+        'If Not AllUsers Then
+        '    Info = New InstallationInfo(UserAppFolder)
+        'Else
+        '    Info = New InstallationInfo(ProgramFileFolder)
+        'End If
         'Info.Delete()
         'Info.Write(InstallationInfo)
 
-        InstallationInfo = ""
-
-        Dim Lang As String() = Directory.GetFiles(Application.StartupPath & "\languages")
-        For I As Integer = 0 To Lang.Length - 1
-            Dim X As Integer = Lang(I).LastIndexOf("\", StringComparison.Ordinal)
-            IO.File.Copy(Lang(I), ProgramFileFolder & "\languages" & Lang(I).Substring(X, Lang(I).Length - X), True)
-            'NO NEED TO CREATE 
-            'IO.File.Copy(Lang(I), UserLanguages & Lang(I).Substring(X, Lang(I).Length - X), True)
-        Next
-
-        Dim Res As String() = Directory.GetFiles(Application.StartupPath & "\resources")
-        For I As Integer = 0 To Res.Length - 1
-            Dim X As Integer = Res(I).LastIndexOf("\", StringComparison.Ordinal)
-            IO.File.Copy(Res(I), ProgramFileFolder & "\resources" & Res(I).Substring(X, Res(I).Length - X), True)
-            'NO NEED TO CREATE 
-            'IO.File.Copy(Res(I), UserResources & Res(I).Substring(X, Res(I).Length - X), True)
-        Next
-
-        If Not IO.File.Exists(StartMenuPath & "\" & Application.ProductName & ".lnk") Then
-            Try
-                With DirectCast(shell.CreateShortcut(StartMenuPath & "\" & Application.ProductName & ".lnk"), IWshShortcut)
-                    .TargetPath = ExePath
-                    .Arguments = "-e"
-                    .Description = Application.ProductName
-                    .WorkingDirectory = ProgramFileFolder
-                    .IconLocation = ExePath & ", 0"
-                    .Save()
-                End With
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, Msg.GetMessage("INS_012"), MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            End Try
-        End If
-
-        If Not IO.File.Exists(StartMenuPath & "\Uninstall.lnk") Then
-            Try
-                With DirectCast(shell.CreateShortcut(StartMenuPath & "\Uninstall.lnk"), IWshShortcut)
-                    .TargetPath = ExePath
-                    .Arguments = "-u"
-                    .Description = "Uninstall " & Application.ProductName
-                    .WorkingDirectory = ProgramFileFolder
-                    .IconLocation = ProgramFileFolder & "\resources\uninstall.ico"
-                    .Save()
-                End With
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, Msg.GetMessage("INS_012"), MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            End Try
-        End If
-        InstallationInfo += StartMenuPath & vbCrLf
-
-        If WindowsStartup Then
-            If Not IO.File.Exists(StartUpPath & "\" & Application.ProductName & ".lnk") Then
-                Try
-                    With DirectCast(shell.CreateShortcut(StartUpPath & "\" & Application.ProductName & ".lnk"), IWshShortcut)
-                        .TargetPath = ExePath
-                        .Arguments = "-e"
-                        .Description = Application.ProductName
-                        .WorkingDirectory = ProgramFileFolder
-                        .IconLocation = ExePath & ", 0"
-                        .Save()
-                    End With
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return False
-                End Try
-            End If
-            InstallationInfo += StartUpPath & "\" & Application.ProductName & ".lnk" & vbCrLf
-        End If
-
-        If DesktopShortcut Then
-            'Desktop Link
-            If Not IO.File.Exists(DesktopPath & "\" & Application.ProductName & ".lnk") Then
-                Try
-                    With DirectCast(shell.CreateShortcut(DesktopPath & "\" & Application.ProductName & ".lnk"), IWshShortcut)
-                        .TargetPath = ExePath
-                        .Arguments = "-e"
-                        .Description = Application.ProductName
-                        .WorkingDirectory = ProgramFileFolder
-                        .IconLocation = ExePath & ", 0"
-                        .Save()
-                    End With
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, Msg.GetMessage("INS_012"), MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return False
-                End Try
-            End If
-            InstallationInfo += DesktopPath & "\" & Application.ProductName & ".lnk" & vbCrLf
-        End If
-
-        'InstallationInfo += ApplicationPath & vbCrLf
-        Dim Info As InstallationInfo
-        If Not AllUsers Then
-            Info = New InstallationInfo(UserAppFolder)
-        Else
-            Info = New InstallationInfo(ProgramFileFolder)
-        End If
-        Info.Delete()
-        Info.Write(InstallationInfo)
-
-        Dim User As UsersInfo = New UsersInfo(ProgramFileFolder)
-        User.Write(Environment.UserName)
+        'Dim User As UsersInfo = New UsersInfo(ProgramFileFolder)
+        'User.Write(Environment.UserName)
 
         'Create first time Config
         Dim DefaultLanguage As String = Config.LANGUAGE
-        Config = New Config(ApplicationPath)
+        ' Nick 28/11/2019
+        'Config = New Config(ApplicationPath)
+        Config = New Config(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName)
         Config.LANGUAGE = DefaultLanguage
         Config.Save()
 

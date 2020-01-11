@@ -26,6 +26,9 @@ Friend Class Config
     End Property
 
     Sub New(Path As String)
+        'If (Path = "") Then
+        Path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
+        'End If
         _Path = Path & "\config.ini"
         SetProperties()
     End Sub
@@ -38,10 +41,12 @@ Friend Class Config
 
                 If Not IO.File.Exists(P & "\config.ini") Then
                     'Probably NOT yet Installed
-                    P = Application.StartupPath
+                    'P = Application.StartupPath
+                    P = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
                 End If
             Else
-                P = Application.StartupPath
+                    'P = Application.StartupPath
+                    P = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
             End If
 
             If Not IO.Directory.Exists(P) Then
@@ -87,8 +92,9 @@ Friend Class Config
 
     Public Function Save() As Boolean
         Dim Stream As StreamWriter = Nothing
-        If Not File.Exists(Path) Then
-            Stream = File.CreateText(Path)
+        Dim myPath As String = (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() & "\" & Application.ProductName & "\config.ini")
+        If Not File.Exists(myPath) Then
+            Stream = File.CreateText(myPath)
             Stream.Close()
 
             Me.HOTKEY_MOD_SPEED_DIAL = &H2 'CTRL
@@ -257,8 +263,11 @@ Friend Class Config
             Dim Langs As String() = IO.Directory.GetFiles(Application.StartupPath & "\languages")
             For L As Integer = 0 To Langs.Length - 1
                 If Langs(L).EndsWith(".lan") Then
-                    Dim INFO As FileInfo = New FileInfo(Langs(L))
-                    Dim _L As String = INFO.Name.Substring(0, INFO.Name.Length - 4)
+                    'Dim INFO As FileInfo = New FileInfo(Langs(L))
+                    'Dim _L As String = INFO.Name.Substring(0, INFO.Name.Length - 4)
+
+                    Dim _M As String() = Langs(L).Substring(0, Langs(L).Length - 4).Split(Convert.ToChar("\"))
+                    Dim _L As String = _M(UBound(_M))
                     If Not Languages.ContainsKey(_L) Then
                         Languages.Add(_L, _L)
                     End If
@@ -446,6 +455,7 @@ Public Class Login
             Dim VersionInfo As Version = New Version
             With VersionInfo
                 Return .Major & "." & .Minor & "." & .Build
+                'Return "3.0.1"
             End With
         End Get
     End Property
@@ -550,12 +560,13 @@ Friend Class Helper
 
     Shared Function GetImage(Name As String) As Bitmap
         Dim Bitmap As System.Drawing.Bitmap = Nothing
-
-        Try
-            Bitmap = New Bitmap(Application.StartupPath & "\resources\" & Name)
-        Catch ex As Exception
-        End Try
-
+        '
+        'Try
+        '       Bitmap = New Bitmap(Application.StartupPath & "\resources\" & Name)
+        'Catch ex As Exception
+        'End Try
+        '
+        'Return Bitmap
         Return Bitmap
     End Function
 
@@ -843,12 +854,13 @@ Friend Class Version
         Catch ex As Exception
         End Try
 
-        If HaveAccess Then
-            Me.Path = IO.Path.Combine(Application.StartupPath, "version.inf")
-        Else
-            Me.Path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName & "\version.inf"
-        End If
-
+        'If HaveAccess Then
+        'Me.Path = IO.Path.Combine(Application.StartupPath, "version.inf")
+        'Else
+        'Me.Path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName & "\version.inf"
+        Me.Path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName & "\config.ini"
+        ''End If
+        '
         Dim T() As String = Me.ReadAllLines
 
         If T.Length > 0 Then
@@ -878,19 +890,22 @@ Friend Class Version
 
     ReadOnly Property Major As String
         Get
-            Return _Major
+            'Return _Major
+            Return "3"
         End Get
     End Property
 
     ReadOnly Property Minor As String
         Get
-            Return _Minor
+            'Return _Minor
+            Return "0"
         End Get
     End Property
 
     ReadOnly Property Build As String
         Get
-            Return _Build
+            'Return _Build
+            Return "1"
         End Get
     End Property
 
@@ -916,10 +931,10 @@ Friend Class MessageHelper
         If Trim(Lang) = "" Then
             Lang = "default"
         End If
-        Dim P As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName & "\Languages\" & Lang & ".lan"
 
+        Dim P As String = Application.StartupPath & "\Languages\" & Lang & ".lan"
         If Not IO.File.Exists(P) Then
-            P = Application.StartupPath & "\Languages\" & Lang & ".lan"
+            P = Environment.CurrentDirectory & "\Languages\" & Lang & ".lan"
         End If
 
         Me.Path = P

@@ -77,41 +77,46 @@ Friend Class TCP_CLIENT
     Public Sub Connect(ByVal IP_Address As String, ByVal prt As Integer)
         Try
             Dim IP_Add As IPAddress '= Dns.GetHostEntry(IP_Address).AddressList(0)
-            Dim addresses() As System.Net.IPAddress = Dns.GetHostEntry(IP_Address).AddressList '
-            If addresses.Length > 0 Then
-                IP_Add = addresses(0)
-            Else
-                IP_Add = IPAddress.Parse(IP_Address)
-            End If
-            If Not IsNothing(IP_Add) AndAlso IP_Add.ToString.IndexOf(":", StringComparison.Ordinal) >= 0 Then
-                'IPV6
-                ' Find an IpV4 address
-                Dim Found As Boolean = False
-                'Dim addresses() As System.Net.IPAddress = Dns.GetHostEntry(IP_Address).AddressList '
-                For Each IP_Add In addresses
-                    If IP_Add.ToString.Contains(".") Then
-                        Found = True
-                        Exit For
-                    End If
-                Next
+            Try
+                Dim addresses() As System.Net.IPAddress = Dns.GetHostEntry(IP_Address).AddressList
 
-                If Not Found Then
-                    MessageBox.Show("No such IP found.")
-                    Exit Sub
+                If addresses.Length > 0 Then
+                    IP_Add = addresses(0)
+                Else
+                    IP_Add = IPAddress.Parse(IP_Address)
                 End If
-            End If
+                If Not IsNothing(IP_Add) AndAlso IP_Add.ToString.IndexOf(":", StringComparison.Ordinal) >= 0 Then
+                    'IPV6
+                    ' Find an IpV4 address
+                    Dim Found As Boolean = False
+                    'Dim addresses() As System.Net.IPAddress = Dns.GetHostEntry(IP_Address).AddressList '
+                    For Each IP_Add In addresses
+                        If IP_Add.ToString.Contains(".") Then
+                            Found = True
+                            Exit For
+                        End If
+                    Next
+
+                    If Not Found Then
+                        MessageBox.Show("No such IP found.")
+                        Exit Sub
+                    End If
+                End If
+            Catch
+                IP_Add = IPAddress.Parse(IP_Address)
+            End Try
 
             Dim m_Remote As IPEndPoint = New IPEndPoint(IP_Add, prt)
 
-            Port = m_Remote.Port
-            IP = m_Remote.Address  'System.Net.IPAddress.Parse(IP_Address)
-            continue_running = True
+                Port = m_Remote.Port
+                IP = m_Remote.Address  'System.Net.IPAddress.Parse(IP_Address)
+                continue_running = True
 
-            Dim clientCommunicationThread As New Thread(AddressOf Run)
-            clientCommunicationThread.Name = "ClientCommunication"
-            clientCommunicationThread.Start()
-        Catch ex As Exception
-            WriteError(ex)
+                Dim clientCommunicationThread As New Thread(AddressOf Run)
+                clientCommunicationThread.Name = "ClientCommunication"
+                clientCommunicationThread.Start()
+            Catch ex As Exception
+                WriteError(ex)
         End Try
     End Sub
 

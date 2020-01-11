@@ -287,6 +287,7 @@ Partial Class FRM_CONFIG
         Me.STARTUP.Size = New System.Drawing.Size(15, 14)
         Me.STARTUP.TabIndex = 15
         Me.STARTUP.UseVisualStyleBackColor = True
+        Me.STARTUP.Visible = False
         '
         'LBL_NOTIFICA_CLOSE
         '
