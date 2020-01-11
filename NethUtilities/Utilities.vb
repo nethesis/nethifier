@@ -14,10 +14,9 @@ Public Class ExceptionManager
             End If
             Me.Path = Path & "\exception.ini"
 
-
         Catch ex As Exception
             'MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Me.Path = ""
+            'Me.Path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\exception.ini"
         End Try
     End Sub
 
@@ -74,9 +73,17 @@ Public MustInherit Class TextFileManager
         Set(value As String)
             Try
                 _Path = value
-                Using Stream As StreamWriter = New StreamWriter(Path, True)
-                    'Just create text file / read
+                'Dim MYINFO As FileInfo = New FileInfo(Path)
+                'If MYINFO.IsReadOnly Then
+                Using Stream As StreamReader = New StreamReader(Path)
                 End Using
+                'Else
+                'Using Stream As StreamWriter = New StreamWriter(Path, True)
+                'End Using
+                'End If
+
+                'Just create text file / read
+                'End Using
             Catch ex As Exception
                 Throw New Exception(ex.Message, ex.InnerException)
             End Try
