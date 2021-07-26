@@ -1,5 +1,30 @@
 ﻿Imports Newtonsoft.Json
 
+
+Public Class CLS_SendUrl
+
+    Private _URL As String
+    Property URL As String
+        Get
+            Return _URL
+        End Get
+        Set(value As String)
+            _URL = value
+        End Set
+    End Property
+
+    Private _Action As String
+    Property Action As String
+        Get
+            Return _Action
+        End Get
+        Set(value As String)
+            _Action = value
+        End Set
+    End Property
+
+End Class
+
 Public Class CLS_ACTIONS
 
     Private _Action As String

@@ -8,6 +8,7 @@ Imports System.Text
 Imports System.IO
 Imports System.Media
 Imports System.Net.Security
+'Imports System.Collections.Specialized
 Imports System.Security.Cryptography
 Imports System.Security.Cryptography.X509Certificates
 Imports Newtonsoft.Json
@@ -16,6 +17,7 @@ Imports Nethifier.Helper
 Imports NAudio.Wave
 
 Friend Class FRM_CONFIG
+
     Private IsLoggedIn As Boolean
     Public IsClosing As Boolean = False
     'Public WithEvents _Client As New TCP_CLIENT(AddressOf UpdateUI)
@@ -73,8 +75,24 @@ Friend Class FRM_CONFIG
         Dim encoding As New System.Text.UTF8Encoding()
         StrToByteArray = encoding.GetBytes(text)
     End Function
+    Private Function Mylog(ByVal context As String, ByVal text As String) As Int16
+        If (InStr(text, ",") > 0) Then
+            text = text.Substring(0, text.IndexOf(","))
+        End If
+        If (context = "UpdateUI") Then
+            text = text.Replace("{", "").Replace("}", "")
+        End If
+        text = text.Replace(vbLf, " ").Replace(Environment.NewLine, " ")
+        Dim DebugPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+        If IO.File.Exists(DebugPath) Then
+            My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- " & context & " - " & text & Environment.NewLine, True)
+        End If
+        Return (0)
+    End Function
 
     Public Sub UpdateUI(ByVal bytes() As Byte)
+
+        'Handle call requested NICK
 
         If Me.InvokeRequired() Then
             ' InvokeRequired: We're running on the background thread. Invoke the delegate.
@@ -93,59 +111,64 @@ Friend Class FRM_CONFIG
                 End If
             Next
 
+            If Not Message.ToLower.StartsWith("{""ping"":""active""}") Then
+                Mylog("UpdateUI", Message)
+            End If
+
+
             'Dim MessagePart() As String
             Dim IsSystem As Boolean = Message.StartsWith("SYS:")
 
-            If IsSystem Then
+                If IsSystem Then
 
-                Message = Message.Substring(4)
+                    Message = Message.Substring(4)
 
-                If Message.StartsWith(vbCrLf & "ERR_MSG: ") Then
-                    Dim M As String() = Split(Message.Substring((vbCrLf & "ERR_MSG: ").Length), "ERR_NUM: ")
-                    TXT_ERROR_LOG.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & M(0)
+                    If Message.StartsWith(vbCrLf & "ERR_MSG: ") Then
+                        Dim M As String() = Split(Message.Substring((vbCrLf & "ERR_MSG: ").Length), "ERR_NUM: ")
+                        TXT_ERROR_LOG.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & M(0)
 
-                    '10054 - Server disconnected
-                    '10060 - Server Response TimeOut
-                    '10053 - Client disconnected
-                    '11004 - Timeout expired
+                        '10054 - Server disconnected
+                        '10060 - Server Response TimeOut
+                        '10053 - Client disconnected
+                        '11004 - Timeout expired
 
-                    If IsNumeric(M(1)) AndAlso (CInt(M(1)) = 10054 OrElse CInt(M(1)) = 10060 OrElse (((CInt(M(1)) = 11004) OrElse CInt(M(1)) = 10053) AndAlso Status <> EnumStatus.Disconnected)) OrElse Status = EnumStatus.Connecting Then
-                        If Status = EnumStatus.Connected AndAlso TryConnectionCount = 0 Then
-                            ShowDisconnectedNotification()
+                        If IsNumeric(M(1)) AndAlso (CInt(M(1)) = 10054 OrElse CInt(M(1)) = 10060 OrElse (((CInt(M(1)) = 11004) OrElse CInt(M(1)) = 10053) AndAlso Status <> EnumStatus.Disconnected)) OrElse Status = EnumStatus.Connecting Then
+                            If Status = EnumStatus.Connected AndAlso TryConnectionCount = 0 Then
+                                ShowDisconnectedNotification()
+                            End If
+
+                            'Auto connect
+                            If TryConnectionCount <= 5 Then
+                                ActivateReconnection()
+                            Else
+                                DisableTimer()
+                            End If
                         End If
 
-                        'Auto connect
-                        If TryConnectionCount <= 5 Then
-                            ActivateReconnection()
+                        If Status = EnumStatus.Connecting Then
+                            BUT_CONNECT.Enabled = True
+
+                            '2016/06/29
+                            If CStr(BUT_CONNECT.Tag) = "FORCING_CONNECTION" Then
+                                BUT_CONNECT.Tag = ""
+                                Disconnect()
+                                EnableProperties(True)
+                            End If
+                            '2016/06/29
                         Else
-                            DisableTimer()
-                        End If
-                    End If
-
-                    If Status = EnumStatus.Connecting Then
-                        BUT_CONNECT.Enabled = True
-
-                        '2016/06/29
-                        If CStr(BUT_CONNECT.Tag) = "FORCING_CONNECTION" Then
-                            BUT_CONNECT.Tag = ""
                             Disconnect()
                             EnableProperties(True)
                         End If
-                        '2016/06/29
                     Else
-                        Disconnect()
-                        EnableProperties(True)
+                        'NOTIFY.Text = Message
                     End If
                 Else
-                    'NOTIFY.Text = Message
+                    TXT_SERVER_MESSAGES.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & Message & vbCrLf
                 End If
-            Else
-                TXT_SERVER_MESSAGES.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & Message & vbCrLf
-            End If
 
-            If Message.EndsWith(vbLf) Then
-                Message = Message.Substring(0, Message.Length - vbLf.Length)
-            End If
+                If Message.EndsWith(vbLf) Then
+                    Message = Message.Substring(0, Message.Length - vbLf.Length)
+                End If
             If Message.ToLower.StartsWith("{""notification"":") Then
                 'MessagePart = Split(Message.Substring("notify:".Length), "#")
 
@@ -234,128 +257,231 @@ Friend Class FRM_CONFIG
                 LED("busy")
 
             ElseIf Message.ToLower.StartsWith("{""ping"":""active""}") Then
+
                 '
-            ElseIf Message.ToLower.StartsWith("{""action"":""reset"",") Then
-                Dim Action As CLS_ACTIONS = New CLS_ACTIONS
-                Dim Comm As New Commands
 
-                JsonConvert.PopulateObject(Message, Action)
-                JsonConvert.PopulateObject(Message.ToLower.Replace("{""action"":""reset"",""type"":""commands"",", "{"), Comm)
+            ElseIf Message.ToLower.StartsWith("{""action"":""sendurl""") Then
+                '   Messaggio ricevuto da Nethifier per l'esecuzione di una chiamata
+                '{
+                '  “action”: “sendurl”,
+                '  “url”: “http://USER:PASSWORD@IP/servlet?number=NUMBER&outgoing_uri=INT@REMOTEHOST”
+                '}
+                LED("busy")
+                Try
+                    Dim URL As String = ""
+                    Dim WIDTH As Integer = 0
+                    Dim HEIGHT As Integer = 0
+                    Dim EXP As Integer = 0
+                    Dim ID As String = ""
+                    Dim ACTION As String = ""
+                    Dim UserName As String
+                    Dim Password As String
+                    Dim UserPwd As String
+                    Dim SubUrl As String
+                    Dim SubLen As Int32
 
-                If Action.Action = "reset" Then
-                    Do While True
-                        Dim E As Boolean = True
-                        For Each Com As Command In Config.Commands.Values
-                            Config.Commands.Remove(Com.Command)
-                            E = False
-                            Exit For
-                        Next
+                    Dim Request As CLS_SendUrl = New CLS_SendUrl
 
-                        If E Then
-                            Config.Save()
-                            Exit Do
-                        End If
-                    Loop
+                    JsonConvert.PopulateObject(Message, Request)
+                    'Request = JsonConvert.DeserializeObject(Message)
 
-                    ReloadCommands(Comm)
-                End If
-
-            ElseIf Message.ToLower.StartsWith("{""commands"":") Then
-                Dim St As String() = Split(Message, vbLf)
-                Dim Comm As Commands = New Commands ' = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Commands)(Message)
-                JsonConvert.PopulateObject(St(0), Comm)
-
-                ReloadCommands(Comm)
-
-                If St.Length > 1 Then
-                    Dim Colo As String = St(1).ToLower.Trim
-
-                    If Colo.StartsWith("{""setcolorled"":") Then
-                        LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
-                    End If
-                End If
-
-            ElseIf Message.ToLower.StartsWith("{""setcolorled"":") Then
-                Dim M As String = Message
-
-                If M.IndexOf(vbLf) > 0 Then
-
-
-                    Dim Colors As String() = Split(M, vbLf)
-                    M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
-                    LED(M.Replace(":", "_"))
-                Else
-                    LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
-                End If
-
-            ElseIf Message.StartsWith("{""ring"":") Then
-
-            Else
-                If Message = Msg.GetMessage("STAT_002") Then
-                    Notifications.ClearNotifications()
-                    Disconnect()
-                    EnableProperties(True)
-
-                ElseIf Message = Msg.GetMessage("STAT_001") Then
-                    UserLogin = New Login("login", TXT_USERNAME.Text, Token)
-                    _Client.SendBytes(StrToByteArray(UserLogin.ToString))
-
-                ElseIf Message.ToLower.StartsWith("{""message"":""authe_ok""}") Then
-                    IsAutoConnecting = False
-                    IsLoggedIn = True
-                    Notifications.TCPClient = _Client
-
-                    PingServer.Enabled = True
-
-                    Status = EnumStatus.Connected
-                    EnableProperties(False)
-                    If _ClickConnected Then
-                        Me.Hide()
-                    End If
-                    _ClickConnected = False
-
-                    'NOTIFY.Icon = GetIcon("online")
-                    NOTIFY.Icon = Nethifier.My.Resources.Resources.online
-
-                    With BUT_CONNECT
-                        .Enabled = True
-                        .Tag = "CONF_004"
-                        .Text = Msg.GetMessage(CStr(.Tag))
+                    With Request
+                        URL = Request.URL
+                        ACTION = Request.Action
                     End With
 
-                    TryConnectionCount = 1
-                    TMR_CONNECTION.Interval = 1
+                    SubLen = Convert.ToInt32(URL.StartsWith("http://")) * 7 + Convert.ToInt32(URL.StartsWith("https://")) * 8
+                    SubUrl = URL.Substring(SubLen, URL.LastIndexOf("/") - SubLen)
 
-                    With TMR_ICONS
-                        .Enabled = False
-                        .Stop()
+                    UserPwd = SubUrl.Substring(0, SubUrl.LastIndexOf("@"))
+                    UserName = UserPwd.Substring(0, UserPwd.IndexOf(":"))
+                    Password = UserPwd.Substring(UserPwd.IndexOf(":") + 1)
+
+                    Mylog("action:sendurl", URL.Replace(Password, "****").ToString())
+
+                    Dim proc As New ProcessStartInfo
+                    With proc
+                        .UseShellExecute = True
+                        .WorkingDirectory = Environment.CurrentDirectory
+                        .FileName = "NethDialer.exe"
+                        .Arguments = "-cloud2call=" & URL
+                        '.Verb = "runas"
                     End With
 
-                    Dim Icon As Integer = 0
-                    If IsNumeric(Msg.GetMessage("TASK_006")) Then
-                        Icon = CInt(Msg.GetMessage("TASK_006"))
-                        If Not (Icon > 0 AndAlso Icon < 4) Then
-                            Icon = 0
+                    Try
+                        Process.Start(proc)
+                    Catch ex As Exception
+                        ' The user refused the elevation. 
+                        ' Do nothing and return directly ... 
+                        'MessageBox.Show(ex.Message)
+                    Finally
+                        'CALL_TIMER.Enabled = True
+                    End Try
+                    'CALL_TIMER.Enabled = True
+
+                    'Dim webClient As New System.Net.WebClient
+                    ''webClient.Headers.Clear()
+                    ''webClient.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
+                    'WebClient.Credentials = New NetworkCredential(UserName, Password)
+                    ''webClient.Headers.Add("Accept-Encoding", "")
+                    ''WebClient.Headers.Add("User-Agent", Guid.NewGuid().ToString)
+                    ''WebClient.Encoding = System.Text.Encoding.UTF8
+                    'If Not (webClient.IsBusy) Then
+                    'Dim result As String
+                    'Try
+                    'result = WebClient.DownloadString(URL)
+                    'Mylog("ResultCall", result.ToString())
+
+                    'Catch e As WebException
+                    'Mylog("ResultCall", e.Message.ToString())
+                    'MsgBox(e.Message.ToString(), 0, "ResultCall")
+                    'End Try
+                    '   'webClient.Dispose()
+                    'Else
+                    'Mylog("ResultCall", "Webclient Busy")
+                    'End If
+
+                Catch ex As Exception
+                    ExceptionManager.Write(ex)
+                    Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                    If IO.File.Exists(DebugPathE) Then
+                        My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- UpdateUIEx: " & ex.Message.Replace(Environment.NewLine, " ") & Environment.NewLine, True)
+                    End If
+                End Try
+
+            ElseIf Message.ToLower.StartsWith("{""action"":""debug""") Then
+                Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Enabled Debug " & Environment.NewLine, True)
+
+            ElseIf Message.ToLower.StartsWith("{""action"":""debug-off""") Then
+                        Dim DebugPathF As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                        If IO.File.Exists(DebugPathF) Then
+                            My.Computer.FileSystem.WriteAllText(DebugPathF, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Disabled Debug " & Environment.NewLine, True)
+                    Dim DebugPathG As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug" & Format(Date.Now(), "yyyyMMddHHmmss") & ".log")
+                    Rename(DebugPathF, DebugPathG)
                         End If
+
+                    ElseIf Message.ToLower.StartsWith("{""action"":""reset"",") Then
+                        Dim Action As CLS_ACTIONS = New CLS_ACTIONS
+                        Dim Comm As New Commands
+
+                        JsonConvert.PopulateObject(Message, Action)
+                        JsonConvert.PopulateObject(Message.ToLower.Replace("{""action"":""reset"",""type"":""commands"",", "{"), Comm)
+
+                        If Action.Action = "reset" Then
+                            Do While True
+                                Dim E As Boolean = True
+                                For Each Com As Command In Config.Commands.Values
+                                    Config.Commands.Remove(Com.Command)
+                                    E = False
+                                    Exit For
+                                Next
+
+                                If E Then
+                                    Config.Save()
+                                    Exit Do
+                                End If
+                            Loop
+
+                            ReloadCommands(Comm)
+                        End If
+
+                    ElseIf Message.ToLower.StartsWith("{""commands"":") Then
+                        Dim St As String() = Split(Message, vbLf)
+                        Dim Comm As Commands = New Commands ' = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Commands)(Message)
+                        JsonConvert.PopulateObject(St(0), Comm)
+
+                        ReloadCommands(Comm)
+
+                        If St.Length > 1 Then
+                            Dim Colo As String = St(1).ToLower.Trim
+
+                            If Colo.StartsWith("{""setcolorled"":") Then
+                                LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
+                            End If
+                        End If
+
+                    ElseIf Message.ToLower.StartsWith("{""setcolorled"":") Then
+                        Dim M As String = Message
+
+                        If M.IndexOf(vbLf) > 0 Then
+
+
+                            Dim Colors As String() = Split(M, vbLf)
+                            M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
+                            LED(M.Replace(":", "_"))
+                        Else
+                            LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
+                        End If
+
+                    ElseIf Message.StartsWith("{""ring"":") Then
+
+                    Else
+                        If Message = Msg.GetMessage("STAT_002") Then
+                        Notifications.ClearNotifications()
+                        Disconnect()
+                        EnableProperties(True)
+
+                    ElseIf Message = Msg.GetMessage("STAT_001") Then
+                        UserLogin = New Login("login", TXT_USERNAME.Text, Token)
+                        _Client.SendBytes(StrToByteArray(UserLogin.ToString))
+
+                    ElseIf Message.ToLower.StartsWith("{""message"":""authe_ok""}") Then
+                        IsAutoConnecting = False
+                        IsLoggedIn = True
+                        Notifications.TCPClient = _Client
+
+                        PingServer.Enabled = True
+
+                        Status = EnumStatus.Connected
+                        EnableProperties(False)
+                        If _ClickConnected Then
+                            Me.Hide()
+                        End If
+                        _ClickConnected = False
+
+                        'NOTIFY.Icon = GetIcon("online")
+                        NOTIFY.Icon = Nethifier.My.Resources.Resources.online
+
+                        With BUT_CONNECT
+                            .Enabled = True
+                            .Tag = "CONF_004"
+                            .Text = Msg.GetMessage(CStr(.Tag))
+                        End With
+
+                        TryConnectionCount = 1
+                        TMR_CONNECTION.Interval = 1
+
+                        With TMR_ICONS
+                            .Enabled = False
+                            .Stop()
+                        End With
+
+                        Dim Icon As Integer = 0
+                        If IsNumeric(Msg.GetMessage("TASK_006")) Then
+                            Icon = CInt(Msg.GetMessage("TASK_006"))
+                            If Not (Icon > 0 AndAlso Icon < 4) Then
+                                Icon = 0
+                            End If
+                        End If
+
+                        'CallToolStripMenuItem.Enabled = True
+                        NOTIFY.ShowBalloonTip(20, Msg.GetMessage("TASK_004"), Msg.GetMessage("TASK_005"), CType(Icon, ToolTipIcon))
+
+                        STRIP_STATUS.Text = Msg.GetMessage("STAT_001") & " [" & Now.ToString("hh:mm:ss") & "]"
+
+                        LED("online")
+
+                    ElseIf Message.Trim.ToLower = "authe_err" Then
+                        Disconnect()
+                        _Client.Disconnect()
                     End If
 
-                    'CallToolStripMenuItem.Enabled = True
-                    NOTIFY.ShowBalloonTip(20, Msg.GetMessage("TASK_004"), Msg.GetMessage("TASK_005"), CType(Icon, ToolTipIcon))
+                    ' Display all other messages in the status strip.
+                    'If Not dontReport Then Me.ToolStripStatusLabel1.Text = Message
 
-                    STRIP_STATUS.Text = Msg.GetMessage("STAT_001") & " [" & Now.ToString("hh:mm:ss") & "]"
-
-                    LED("online")
-
-                ElseIf Message.Trim.ToLower = "authe_err" Then
-                    Disconnect()
-                    _Client.Disconnect()
                 End If
-
-                ' Display all other messages in the status strip.
-                'If Not dontReport Then Me.ToolStripStatusLabel1.Text = Message
-
             End If
-        End If
 
         'IsAutoConnecting = False
 
@@ -500,7 +626,7 @@ Friend Class FRM_CONFIG
         CMB_MODE.Enabled = Enabled
         'NUM_NOTIFICA.Enabled = Enabled
         'AUTO_LOGIN.Enabled = Enabled
-        STARTUP.Enabled = FALSE
+        STARTUP.Enabled = False
         'BUT_SAVE.Enabled = Enabled
     End Sub
 
@@ -608,8 +734,10 @@ Friend Class FRM_CONFIG
                 End If
             Next
 
+            'LoadDial(CMB_SPEEDDIAL_HOTKEY, "PlayPause", .MOD_SPEED_DIAL, 256)
             LoadDial(CMB_SPEEDDIAL_HOTKEY, TXT_SPEEDDIAL_HOTKEY, .MOD_SPEED_DIAL, 100)
             LoadDial(CMB_REDIAL_HOTKEY, TXT_REDIAL_HOTKEY, .MOD_REDIAL, 200)
+            RegisterHotKey(Me.Handle, 101, 2, 118)
             LoadCommands(.Commands, Config)
 
             TXT_SOUND.Text = .SOUND_FILE
@@ -793,7 +921,6 @@ Friend Class FRM_CONFIG
 
         DisableTimer()
 
-
         '2016/06/29
         BUT_CONNECT.Tag = "FORCING_CONNECTION"
         '2016/06/29
@@ -858,6 +985,7 @@ Friend Class FRM_CONFIG
         Else
             ShowToolStripMenuItem.Text = Msg.GetMessage("CTX_003")
         End If
+
         CallToolStripMenuItem.Enabled = Not IsNothing(UserLogin)
 
         'With ConnectToolStripMenuItem
@@ -1043,19 +1171,21 @@ Friend Class FRM_CONFIG
         Dim postdata As String
         Dim postdatabytes As Byte()
 
-        'Dim Url As String = "https://" & TXT_SERVER.Text & "/webrest/authentication/login" 'TXT_AUTHEN.Text
-        Dim Url As String = "https://"
-        With NethDebug
-            If .IsActive Then
-                Url += .DEBUG_HTTP_SERVER_ADDRESS
-                If .DEBUG_HTTP_SERVER_PORT <> "" Then
-                    Url += ":" & .DEBUG_HTTP_SERVER_PORT
-                End If
-            Else
-                Url += TXT_SERVER.Text
-            End If
-        End With
-        Url += "/webrest/authentication/login"
+        Dim Url As String = "https://" & TXT_SERVER.Text & "/webrest/authentication/login" 'TXT_AUTHEN.Text
+
+        'NICK!
+        'Dim Url As String = "https://"
+        'With NethDebug
+        '    If .IsActive Then
+        '        Url += .DEBUG_HTTP_SERVER_ADDRESS
+        '        If .DEBUG_HTTP_SERVER_PORT <> "" Then
+        '            Url += ":" & .DEBUG_HTTP_SERVER_PORT
+        '        End If
+        '    Else
+        '        Url += TXT_SERVER.Text
+        '    End If
+        'End With
+        'Url += "/webrest/authentication/login"
 
         'Url = TXT_AUTHEN.Text
 
@@ -1244,6 +1374,7 @@ Friend Class FRM_CONFIG
         If My.Application.CommandLineArgs.Contains("-R") Then
             Application.Exit()
         End If
+
     End Sub
 
     Private Sub RegEdit(IsAutoSave As Boolean)
@@ -1769,7 +1900,7 @@ Friend Class FRM_CONFIG
     'Public Const MOD_ALT As Integer = &H1 + &H2 + &H4 + &H8
 
     Public Const MOD_ALT As Integer = &H0
-
+    Public Const WM_KEYDOWN As Integer = &H100
     Public Const WM_HOTKEY As Integer = &H312
     <DllImport("User32.dll")>
     Public Shared Function RegisterHotKey(ByVal hwnd As IntPtr,
@@ -1788,13 +1919,114 @@ Friend Class FRM_CONFIG
     Private Shared Sub keybd_event(bVk As Byte, bScan As Byte, dwFlags As UInteger, dwExtraInfo As UInteger)
     End Sub
     'FOR COPYTEXT
+    Public Function DoHandleInCall(MyAction As String) As Boolean
+
+        Dim Url As String = ""
+        Url = "https://" & Config.SERVER & "/webrest/astproxy/" & MyAction.ToLower.ToString()
+
+        Dim proc As New ProcessStartInfo
+        With proc
+            .UseShellExecute = True
+            .WorkingDirectory = Environment.CurrentDirectory
+            .FileName = "NethDialer.exe"
+            .Arguments = "-username=" & UserLogin.Username & " -token=" & UserLogin.Token & "-phone=0 -url=" & Url
+            '.Verb = "runas"
+        End With
+
+        Try
+            Process.Start(proc)
+        Catch ex As Exception
+            ' The user refused the elevation. 
+            ' Do nothing and return directly ... 
+            'MessageBox.Show(ex.Message)
+        Finally
+            'CALL_TIMER.Enabled = True
+        End Try
+
+        Exit Function
+
+        'Gestione Expired HTTPS certificate
+        System.Net.ServicePointManager.ServerCertificateValidationCallback = AddressOf CertificateHandler
+        Try
+            Dim s As WebRequest  'HttpWebRequest
+            Dim enc As UTF8Encoding
+            Dim postdata As String
+            Dim postdatabytes As Byte()
+
+            'Dim Url As String = "https://" & TXT_SERVER.Text & "/webrest/authentication/login" 'TXT_AUTHEN.Text
+            'LBL_CHIAMATA.Text = "Connessione al server in corso..."
+            Application.DoEvents()
+
+            ExceptionManager.Write("Handling InCall " & MyAction.ToLower.ToString())
+
+            Url = "https://"
+            With NethDebug
+                If .IsActive Then
+                    Url += .DEBUG_HTTP_SERVER_ADDRESS
+                    If .DEBUG_HTTP_SERVER_PORT <> "" Then
+                        Url += ":" & .DEBUG_HTTP_SERVER_PORT
+                    End If
+                Else
+                    Url += Config.SERVER
+                End If
+            End With
+            Url += "/webrest/astproxy/" & MyAction.ToLower.ToString()
+
+            ExceptionManager.Write("Creating request...")
+
+            s = WebRequest.Create(Url)
+
+            ExceptionManager.Write("Request created...[" & Url & "]")
+
+            enc = New System.Text.UTF8Encoding()
+            postdata = ""
+            postdatabytes = enc.GetBytes(postdata)
+
+            ExceptionManager.Write("Generating data...[" & postdata & "]")
+
+            s.Method = "POST"
+            's.Timeout = 30
+            s.ContentType = "application/x-www-form-urlencoded"
+            s.ContentLength = postdatabytes.Length
+
+            ExceptionManager.Write("Request authorization...")
+            s.Headers.Add("Authorization", UserLogin.Username & ":" & UserLogin.Token.ToLower)
+
+            ExceptionManager.Write("Posting data...")
+            Using Stream = s.GetRequestStream()
+                Stream.Write(postdatabytes, 0, postdatabytes.Length)
+            End Using
+            ExceptionManager.Write("Data posted...")
+
+            'LBL_CHIAMATA.Text = "Handling InCall " & MyAction.ToLower.ToString()
+            Application.DoEvents()
+
+            ''Token
+            ExceptionManager.Write("Recieving response...")
+            Dim Respo As String = Trim("" & s.GetResponse.Headers("www-authenticate"))
+            ExceptionManager.Write("Response recieved...[" & Respo & "]")
+            ExceptionManager.Write("Telephone is ringing, please pick it up...")
+        Catch ex As Exception
+            Opacity = 0
+            Application.DoEvents()
+            ex = New Exception("Impossibile gestire la chiamata." & vbCrLf & "REASON:" & ex.Message & vbCrLf & "Action:" & MyAction.ToLower.ToString())
+            MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            DoShowError(ex)
+            Dim DebugPath As String = IO.Path.Combine(Application.StartupPath, "debug.log")
+            If IO.File.Exists(DebugPath) Then
+                My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- DoCallEx: " & ex.Message, True)
+            End If
+
+        End Try
+        'CALL_TIMER.Enabled = True
+
+    End Function
     Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
         If m.Msg = WM_HOTKEY Then
             Dim id As IntPtr = m.WParam
             Select Case (id.ToString)
                 Case "100", "200"
                     Try
-
                         SendCtrlC()
                         Application.DoEvents()
                         System.Threading.Thread.Sleep(100)
@@ -1813,10 +2045,13 @@ Friend Class FRM_CONFIG
                             End If
                         End If
                         Application.DoEvents()
-
                     Catch ex As Exception
                     Finally
                     End Try
+
+                Case "101"
+                    DoHandleInCall("answer")
+
             End Select
         End If
         MyBase.WndProc(m)
@@ -1874,7 +2109,6 @@ Friend Class FRM_CONFIG
 
             'MP3
             Dim FormatSound As String = TXT_SOUND.Text.Trim.ToLower
-
 
             Wave = New NAudio.Wave.WaveOut
             Wave.DeviceNumber = (CMB_DEVICE.SelectedIndex)
@@ -1997,9 +2231,14 @@ Friend Class FRM_CONFIG
         End If
     End Sub
 
-    Private Sub FRM_CONFIG_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
-
-    End Sub
-
     'FOR DIALER
+End Class
+Public Class WbClnt
+    Inherits System.Net.WebClient
+    Protected Overrides Function GetWebRequest(ByVal uri As Uri) As WebRequest
+        Dim w As WebRequest = MyBase.GetWebRequest(uri)
+        'w.Timeout = 500000
+        Threading.Thread.Sleep(5000)
+        Return w
+    End Function
 End Class

@@ -1,8 +1,9 @@
 ﻿Imports Nethifier.Helper
 Imports Microsoft.Win32
 Imports System.IO
-
 Public NotInheritable Class FRM_SPLASH
+
+    'NICK Multimedia 
 
     'TODO: This form can easily be set as the splash screen for the application by going to the "Application" tab
     '  of the Project Designer ("Properties" under the "Project" menu).
@@ -16,6 +17,13 @@ Public NotInheritable Class FRM_SPLASH
 
     Private Sub FRM_SPLASH_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         'Set up the dialog text at runtime according to the application's assembly information.  
+        'Dim DebugPath As String = IO.Path.Combine(Application.StartupPath, "debug.log")
+        Dim DebugPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+        'My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "TEST" & vbCrLf, True)
+        If IO.File.Exists(DebugPath) Then
+            Dim arguments As String() = Environment.GetCommandLineArgs()
+            My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Execution with args: " & String.Join(", ", arguments).Replace(Environment.NewLine, " ") & Environment.NewLine, True)
+        End If
 
         Dim RunningProcess As Process = Nothing
 

@@ -117,4 +117,77 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ballon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\ballon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="chat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\chat.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\close.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="folder1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nethifier_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\nethifier_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nethifier_blue1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nethifier_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nethifier_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\nethifier_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nethifier_red1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nethifier_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="offline" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\offline.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="online" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\online.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="panel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\panel.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="prova" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\prova.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="prova1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\prova.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="prova_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\prova_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="prova_red1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\prova_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="reconnect_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\reconnect_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="reconnect_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\reconnect_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="reconnect_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__prerequisites\Resources\reconnect_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="reconnect_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\reconnect_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="uninstall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\uninstall.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\user.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="video_chat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\__Prerequisites\Resources\video_chat.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

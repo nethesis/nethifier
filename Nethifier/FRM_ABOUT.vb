@@ -32,16 +32,16 @@ Friend NotInheritable Class FRM_ABOUT
         '    properties dialog (under the "Project" menu).
         Me.LabelProductName.Text = My.Application.Info.ProductName
 
-        Dim VersionInfo As Version = New Version
-        With VersionInfo
-            Me.LabelVersion.Text = String.Format("Version {0}", .Major & "." & .Minor & "." & .Build)
-            Me.LabelCopyright.Text = .Copyright
-            Me.LabelCompanyName.Text = .CompanyName
-        End With
+        'Dim VersionInfo As Version = New Version
+        'With VersionInfo
+        'Me.LabelVersion.Text = String.Format("Version {0}", .Major & "." & .Minor & "." & .Build)
+        'Me.LabelCopyright.Text = .Copyright
+        'Me.LabelCompanyName.Text = .CompanyName
+        'End With
 
-        'Me.LabelVersion.Text = String.Format("Version {0}", My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build)
-        'Me.LabelCopyright.Text = My.Application.Info.Copyright
-        'Me.LabelCompanyName.Text = My.Application.Info.CompanyName
+        Me.LabelVersion.Text = String.Format("Version {0}", My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build)
+        Me.LabelCopyright.Text = My.Application.Info.Copyright
+        Me.LabelCompanyName.Text = My.Application.Info.CompanyName
 
         Me.TextBoxDescription.Text = Msg.GetMessage("ABOUT") 'My.Application.Info.Description
 

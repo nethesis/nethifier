@@ -28,13 +28,14 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(153, 17)
+        Me.ClientSize = New System.Drawing.Size(0, 0)
         Me.ControlBox = False
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "Form1"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
+        Me.Text = "S"
         Me.TopMost = True
         Me.ResumeLayout(False)
 

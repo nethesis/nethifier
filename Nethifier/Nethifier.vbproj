@@ -25,7 +25,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>C:\Users\Utente\Desktop\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -36,8 +36,9 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.0.1.0</ApplicationVersion>
+    <ApplicationVersion>3.0.5.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -76,7 +77,7 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
+    <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -137,20 +138,35 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>B8313ADEE836A265DE948EF7F35D9C477CE4DEAC</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Nethifier_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DnsClient, Version=1.2.0.0, Culture=neutral, PublicKeyToken=4574bb5573c51424, processorArchitecture=MSIL">
-      <HintPath>packages\DnsClient.1.2.0\lib\net45\DnsClient.dll</HintPath>
+    <Reference Include="DnsClient, Version=1.3.2.0, Culture=neutral, PublicKeyToken=4574bb5573c51424, processorArchitecture=MSIL">
+      <HintPath>..\packages\DnsClient.1.3.2\lib\net45\DnsClient.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\NAudio.dll</HintPath>
+    <Reference Include="HidLibrary, Version=3.2.49.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\hidlibrary.3.3.40\lib\net45\HidLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="LuxaforSharp, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LuxaforSharp.2.0.0.0\lib\net45\LuxaforSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Buffers.4.4.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -279,7 +295,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NAudio.dll" />
     <None Include="Resources\video_chat.ico" />
     <None Include="Resources\user.ico" />
     <None Include="Resources\uninstall.ico" />
@@ -343,8 +358,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="chat.ico" />
-    <Content Include="HidLibrary.dll" />
-    <Content Include="LuxaforSharp.dll" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">

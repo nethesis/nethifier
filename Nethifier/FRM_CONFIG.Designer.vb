@@ -92,6 +92,11 @@ Partial Class FRM_CONFIG
         Me.TMR_ELAPSE = New System.Windows.Forms.Timer(Me.components)
         Me.TMR_ICONS = New System.Windows.Forms.Timer(Me.components)
         Me.TMR_DEVICE = New System.Windows.Forms.Timer(Me.components)
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
+        Me.CHK_ONEKEY = New System.Windows.Forms.CheckBox()
+        Me.CHK_ANSWER = New System.Windows.Forms.CheckBox()
         Me.StatusStrip1.SuspendLayout()
         Me.gbIpAddress.SuspendLayout()
         Me.gbServerPort.SuspendLayout()
@@ -106,6 +111,7 @@ Partial Class FRM_CONFIG
         Me.TAB_005.SuspendLayout()
         Me.TAB_006.SuspendLayout()
         Me.GRP_SUONERIA.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'BUT_CONNECT
@@ -565,6 +571,7 @@ Partial Class FRM_CONFIG
         '
         'TAB_006
         '
+        Me.TAB_006.Controls.Add(Me.GroupBox1)
         Me.TAB_006.Controls.Add(Me.CHK_SUONERIA)
         Me.TAB_006.Controls.Add(Me.GRP_SUONERIA)
         Me.TAB_006.Location = New System.Drawing.Point(4, 22)
@@ -597,7 +604,7 @@ Partial Class FRM_CONFIG
         Me.GRP_SUONERIA.Enabled = False
         Me.GRP_SUONERIA.Location = New System.Drawing.Point(6, 8)
         Me.GRP_SUONERIA.Name = "GRP_SUONERIA"
-        Me.GRP_SUONERIA.Size = New System.Drawing.Size(392, 118)
+        Me.GRP_SUONERIA.Size = New System.Drawing.Size(392, 98)
         Me.GRP_SUONERIA.TabIndex = 7
         Me.GRP_SUONERIA.TabStop = False
         '
@@ -709,6 +716,61 @@ Partial Class FRM_CONFIG
         Me.TMR_DEVICE.Enabled = True
         Me.TMR_DEVICE.Interval = 1000
         '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.CHK_ANSWER)
+        Me.GroupBox1.Controls.Add(Me.Label5)
+        Me.GroupBox1.Controls.Add(Me.ComboBox1)
+        Me.GroupBox1.Controls.Add(Me.CHK_ONEKEY)
+        Me.GroupBox1.Enabled = False
+        Me.GroupBox1.Location = New System.Drawing.Point(6, 112)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(392, 71)
+        Me.GroupBox1.TabIndex = 9
+        Me.GroupBox1.TabStop = False
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(6, 25)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(41, 13)
+        Me.Label5.TabIndex = 1
+        Me.Label5.Text = "Device"
+        '
+        'ComboBox1
+        '
+        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox1.FormattingEnabled = True
+        Me.ComboBox1.Location = New System.Drawing.Point(53, 22)
+        Me.ComboBox1.Name = "ComboBox1"
+        Me.ComboBox1.Size = New System.Drawing.Size(330, 21)
+        Me.ComboBox1.TabIndex = 0
+        '
+        'CHK_ONEKEY
+        '
+        Me.CHK_ONEKEY.AutoSize = True
+        Me.CHK_ONEKEY.Enabled = False
+        Me.CHK_ONEKEY.Location = New System.Drawing.Point(53, 49)
+        Me.CHK_ONEKEY.Name = "CHK_ONEKEY"
+        Me.CHK_ONEKEY.Size = New System.Drawing.Size(308, 17)
+        Me.CHK_ONEKEY.TabIndex = 6
+        Me.CHK_ONEKEY.Text = "Usa un solo tasto per rispondere e per terminare la chiamata"
+        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo il check, la suoneria sarà esguita una volta sola all'arrivo della chia" &
+        "mata")
+        Me.CHK_ONEKEY.UseVisualStyleBackColor = True
+        '
+        'CHK_ANSWER
+        '
+        Me.CHK_ANSWER.AutoSize = True
+        Me.CHK_ANSWER.BackColor = System.Drawing.Color.White
+        Me.CHK_ANSWER.Location = New System.Drawing.Point(6, -1)
+        Me.CHK_ANSWER.Name = "CHK_ANSWER"
+        Me.CHK_ANSWER.Size = New System.Drawing.Size(169, 17)
+        Me.CHK_ANSWER.TabIndex = 9
+        Me.CHK_ANSWER.Text = "Abilita risposta con tasto cuffia"
+        Me.CHK_ANSWER.UseVisualStyleBackColor = False
+        '
         'FRM_CONFIG
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -749,6 +811,8 @@ Partial Class FRM_CONFIG
         Me.TAB_006.PerformLayout()
         Me.GRP_SUONERIA.ResumeLayout(False)
         Me.GRP_SUONERIA.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -821,4 +885,9 @@ Partial Class FRM_CONFIG
     Friend WithEvents TMR_DEVICE As Timer
     Friend WithEvents CHK_SUONERIA As CheckBox
     Friend WithEvents GRP_SUONERIA As GroupBox
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents CHK_ANSWER As CheckBox
+    Friend WithEvents Label5 As Label
+    Friend WithEvents ComboBox1 As ComboBox
+    Friend WithEvents CHK_ONEKEY As CheckBox
 End Class

@@ -1,6 +1,9 @@
 ﻿Imports System.Threading
 Imports System.Net
 Imports System.Net.Sockets
+Imports System.Net.Security
+Imports System.Security.Cryptography
+Imports System.Security.Cryptography.X509Certificates
 'Imports System.IO
 
 Friend Class TCP_CLIENT
@@ -23,6 +26,7 @@ Friend Class TCP_CLIENT
     Private Const PingInterval As Integer = 45000 '45 secondi
 
     Private Stream As NetworkStream
+    Private sslStream As SslStream
     ''Private fileWriter As clsAsyncUnbuffWriter
     'Private fileReader As FileStream
     'Private FileBeingSentPath As String
@@ -112,9 +116,13 @@ Friend Class TCP_CLIENT
                 IP = m_Remote.Address  'System.Net.IPAddress.Parse(IP_Address)
                 continue_running = True
 
-                Dim clientCommunicationThread As New Thread(AddressOf Run)
-                clientCommunicationThread.Name = "ClientCommunication"
-                clientCommunicationThread.Start()
+            'PLAIN
+            Dim clientCommunicationThread As New Thread(AddressOf Run)
+            'SSL
+            'Dim clientCommunicationThread As New Thread(AddressOf RunSSL)
+
+            clientCommunicationThread.Name = "ClientCommunication"
+            clientCommunicationThread.Start()
             Catch ex As Exception
                 WriteError(ex)
         End Try
@@ -130,7 +138,10 @@ Friend Class TCP_CLIENT
 
     Public Function SendBytes(ByVal OutGoingMessage() As Byte) As Boolean
 
-        If Client.Client.Connected Then
+        If Not (sslStream Is Nothing) Then
+            sslStream.Write(OutGoingMessage, 0, OutGoingMessage.Length)
+            sslStream.Flush()
+        ElseIf Client.Client.Connected Then
             Stream.Write(OutGoingMessage, 0, OutGoingMessage.Length)
             Stream.Flush()
         End If
@@ -186,7 +197,6 @@ Friend Class TCP_CLIENT
 
             Client.Connect(IP, Port)
 
-            ' Connection Accepted.
             Stream = Client.GetStream()
             Stream.ReadTimeout = PingInterval
 
@@ -258,6 +268,113 @@ Friend Class TCP_CLIENT
         isRunning = False
 
     End Sub
+    Private Sub RunSSL()
+
+        Dim puck(1) As Byte : puck(0) = 0
+        Dim theBuffer(blockSize - 1) As Byte
+        Dim tmp(1) As Byte
+        Dim dataChannel As Integer = 0
+        Dim packetSize As UShort = 0
+        'Dim bytesread As Integer
+        Dim userOrSystemSwitcher As Integer = 0
+        Dim PercentUsage As Short = -1
+
+        WaitingForServerReply = New System.Windows.Forms.Timer
+        With WaitingForServerReply
+            .Interval = 5000 '5 seconds '''60000 '
+            .Enabled = False
+        End With
+
+        Try
+
+            Client = New TcpClient
+
+            Client.Connect(IP, Port)
+            Client.NoDelay = True
+            ' Connection Accepted.
+            ' NOSSL
+            'Stream = Client.GetStream()
+            'Stream.ReadTimeout = PingInterval
+
+            'SSL
+            Dim callback As RemoteCertificateValidationCallback = New RemoteCertificateValidationCallback(AddressOf CertificateHandler)
+            Dim mysslStream As SslStream = New SslStream(Client.GetStream(), False, callback)
+            mysslStream.AuthenticateAsClient("Nethifier")
+
+            If mysslStream.IsAuthenticated Then
+                SystemMessage("SYS:" & Msg.GetMessage("SSL_AUTHENTICATED"))
+                sslStream = mysslStream
+            End If
+
+            ' Pass a message up to the user about our status.
+            SystemMessage("SYS:" & Msg.GetMessage("STAT_001"))
+            isRunning = True
+
+            ' Start the communication loop
+            Do
+
+                'Dim Buffer(10024) As Byte 'WIN7
+                Dim Buffer(65537) As Byte 'WIN8
+                Dim BufferSize As Integer
+
+                'If theClientIsStopping() Then Exit Do
+                BufferSize = Client.ReceiveBufferSize
+
+                'MessageBox.Show(BufferSize.ToString)
+                'MessageBox.Show(Buffer.Length.ToString)
+
+                sslStream.Read(Buffer, 0, BufferSize)
+
+                If CLng(Buffer.GetValue(0)) > 0 Then
+                    RcvBytes(Buffer)
+                    Debug.WriteLine(Replace(System.Text.Encoding.UTF8.GetString(Buffer), Chr(0), ""))
+                Else
+
+                    If ServerResponseExpired Then
+
+                        'Client.Close()
+                        ServerResponseExpired = False
+                        WaitingForServerReply.Enabled = False
+
+                        Throw New System.Net.Sockets.SocketException(System.Net.Sockets.SocketError.NoData)
+                        'SystemMessage("SYS:" & vbCrLf & "ERR_MSG: " & vbCrLf & "ERR_NUM: 10054")
+                        'Exit Do
+                    End If
+                    WaitingForServerReply.Enabled = True
+
+                End If
+
+                Application.DoEvents()
+            Loop
+        Catch ex As Exception
+
+            isRunning = False
+
+            If Not IsNothing(ex.InnerException) Then
+                WriteError(ex.InnerException)
+            Else
+                WriteError(ex)
+            End If
+        End Try
+
+        Try
+            'CPUutil.StopWatcher()
+            Client.Client.Close()
+            SystemMessage("SYS:" & Msg.GetMessage("STAT_002"))
+        Catch ex As Exception
+            If Not IsNothing(ex.InnerException) Then
+                WriteError(ex.InnerException)
+            Else
+                WriteError(ex)
+            End If
+        End Try
+
+        isRunning = False
+
+    End Sub
+    Private Shared Function CertificateHandler(ByVal sender As Object, ByVal certificate As X509Certificate, ByVal chain As X509Chain, ByVal SSLerror As SslPolicyErrors) As Boolean
+        Return True
+    End Function
 
     Private Sub WriteError(Ex As Exception)
         Dim Message As String = Ex.Message

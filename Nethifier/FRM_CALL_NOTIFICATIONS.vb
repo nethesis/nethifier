@@ -138,14 +138,25 @@ Friend NotInheritable Class FRM_CALL_NOTIFICATIONS
             ex = New Exception("Impossibile effettuare la chiamata." & vbCrLf & "REASON:" & ex.Message & vbCrLf & "URL:" & Url)
             MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error)
             DoShowError(ex)
+            Dim DebugPath As String = IO.Path.Combine(Application.StartupPath, "debug.log")
+            If IO.File.Exists(DebugPath) Then
+                My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- DoCallEx: " & ex.Message, True)
+            End If
+
         End Try
         CALL_TIMER.Enabled = True
 
     End Function
 
+
+
     Private Sub DoShowError(Ex As Exception)
 
         ExceptionManager.Write(Ex)
+        Dim DebugPath As String = IO.Path.Combine(Application.StartupPath, "debug.log")
+        If IO.File.Exists(DebugPath) Then
+            My.Computer.FileSystem.WriteAllText(DebugPath, Ex.ToString(), True)
+        End If
 
     End Sub
 End Class

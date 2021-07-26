@@ -88,7 +88,8 @@ Partial Class FRM_SPLASH
         Me.Version.Name = "Version"
         Me.Version.Size = New System.Drawing.Size(241, 20)
         Me.Version.TabIndex = 1
-        Me.Version.Text = "Version {0}.{1:00}"
+        'Me.Version.Text = "Version {0}.{1:00}"
+        Me.Version.Text = "Version " + System.Windows.Forms.Application.ProductVersion
         '
         'Copyright
         '

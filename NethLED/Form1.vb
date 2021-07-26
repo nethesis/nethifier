@@ -21,11 +21,16 @@ Public Class Form1
                 Dim List As IDeviceList = New DeviceList
                 List.Scan()
                 Device = List.First
+
             End If
 
         Catch ex As Exception
 
         End Try
+
+        If IsNothing(Device) Then
+            Threading.Thread.Sleep(5000)
+        End If
 
         Return Device
     End Function
@@ -100,7 +105,8 @@ Public Class Form1
                     Dim RGB As String() = Split(LED_Type, "_")
                     With GetLED()
                         Threading.Thread.Sleep(1)
-                        .SetColor(LedTarget.All, New Color(CInt(RGB(0)), CInt(RGB(1)), CInt(RGB(2))))
+                        '.SetColor(LedTarget.All, New Color(CInt(RGB(0)), CInt(RGB(1)), CInt(RGB(2))))
+                        .SetColor(LedTarget.All, New Color(0, 1, 2))
                     End With
                     LED_Type = ""
             End Select
