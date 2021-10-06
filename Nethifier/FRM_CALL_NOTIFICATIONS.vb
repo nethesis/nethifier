@@ -3,6 +3,7 @@ Imports System.Net.Security
 Imports System.Security.Cryptography.X509Certificates
 Imports System.Text
 Imports System.Web
+Imports System.Diagnostics.Debug
 Imports Nethifier.Helper
 
 Friend NotInheritable Class FRM_CALL_NOTIFICATIONS
@@ -29,10 +30,6 @@ Friend NotInheritable Class FRM_CALL_NOTIFICATIONS
 
     Private Sub LNK_CLEAR_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LNK_CLEAR.LinkClicked
         Me.Close()
-    End Sub
-
-    Private Sub FRM_CALL_NOTIFICATIONS_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
     End Sub
 
     Private Sub CALL_TIMER_Tick(sender As Object, e As EventArgs) Handles CALL_TIMER.Tick

@@ -16,3 +16,15 @@ C:\Projects\Source\Workspaces\Neth-Dev\NethUtilities\obj\Debug\NethUtilities.dll
 C:\Projects\Source\Workspaces\Neth-Dev\NethUtilities\obj\Debug\NethUtilities.xml
 C:\Projects\Source\Workspaces\Neth-Dev\NethUtilities\obj\Debug\NethUtilities.pdb
 C:\Projects\Source\Workspaces\Neth-Dev\NethUtilities\obj\Debug\NethUtilities.vbprojResolveAssemblyReference.cache
+C:\Users\Utente\source\repos\nethifier\NethUtilities\bin\Debug\NethUtilities.dll
+C:\Users\Utente\source\repos\nethifier\NethUtilities\bin\Debug\NethUtilities.pdb
+C:\Users\Utente\source\repos\nethifier\NethUtilities\bin\Debug\NethUtilities.xml
+C:\Users\Utente\source\repos\nethifier\NethUtilities\bin\Debug\NAudio.dll
+C:\Users\Utente\source\repos\nethifier\NethUtilities\bin\Debug\NAudio.xml
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.Resources.resources
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.vbproj.GenerateResource.cache
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.vbproj.CoreCompileInputs.cache
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.vbproj.CopyComplete
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.dll
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.xml
+C:\Users\Utente\source\repos\nethifier\NethUtilities\obj\Debug\NethUtilities.pdb

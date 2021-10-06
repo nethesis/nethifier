@@ -1,6 +1,4 @@
-﻿
-
-Imports System.IO
+﻿Imports System.IO
 Imports LuxaforSharp
 
 Public Class Form1

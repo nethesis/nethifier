@@ -78,7 +78,7 @@ Friend Class TCP_CLIENT
         ClientCallbackObject = callbackMethod
     End Sub
 
-    Public Sub Connect(ByVal IP_Address As String, ByVal prt As Integer)
+    Public Sub Connect(ByVal IP_Address As String, ByVal prt As Integer, Mode As String)
         Try
             Dim IP_Add As IPAddress '= Dns.GetHostEntry(IP_Address).AddressList(0)
             Try
@@ -112,19 +112,23 @@ Friend Class TCP_CLIENT
 
             Dim m_Remote As IPEndPoint = New IPEndPoint(IP_Add, prt)
 
-                Port = m_Remote.Port
-                IP = m_Remote.Address  'System.Net.IPAddress.Parse(IP_Address)
-                continue_running = True
+            Port = m_Remote.Port
+            IP = m_Remote.Address  'System.Net.IPAddress.Parse(IP_Address)
+            continue_running = True
 
-            'PLAIN
-            Dim clientCommunicationThread As New Thread(AddressOf Run)
-            'SSL
-            'Dim clientCommunicationThread As New Thread(AddressOf RunSSL)
-
-            clientCommunicationThread.Name = "ClientCommunication"
-            clientCommunicationThread.Start()
-            Catch ex As Exception
-                WriteError(ex)
+            If (Mode = "TLS") Then
+                'SSL
+                Dim clientCommunicationThread As New Thread(AddressOf RunSSL)
+                clientCommunicationThread.Name = "ClientCommunication"
+                clientCommunicationThread.Start()
+            Else
+                'PLAIN
+                Dim clientCommunicationThread As New Thread(AddressOf Run)
+                clientCommunicationThread.Name = "ClientCommunication"
+                clientCommunicationThread.Start()
+            End If
+        Catch ex As Exception
+            WriteError(ex)
         End Try
     End Sub
 

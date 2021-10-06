@@ -84,7 +84,8 @@ Friend NotInheritable Class FRM_PHONECALLER
     End Sub
 
     Private Sub TXT_PHONE_NUMBER_TextChanged(sender As Object, e As EventArgs) Handles TXT_PHONE_NUMBER.TextChanged
-        BUT_CALL.Enabled = IsNumeric(TXT_PHONE_NUMBER.Text)
+        'BUT_CALL.Enabled = IsNumeric(TXT_PHONE_NUMBER.Text)
+        BUT_CALL.Enabled = IsNumeric(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(TXT_PHONE_NUMBER.Text, "-", ""), "/", ""), " ", ""), "(", ""), ")", ""), "[", ""), "]", ""), "{", ""), "}", ""))
     End Sub
 
     Private Sub NUM_Click(sender As Object, e As EventArgs) Handles BUT_0.Click, BUT_1.Click, BUT_2.Click,

@@ -1,5 +1,4 @@
 ﻿Imports System.Runtime.InteropServices
-
 Imports System.Linq
 Imports Microsoft.Win32
 Imports System.Net
@@ -9,6 +8,7 @@ Imports System.IO
 Imports System.Media
 Imports System.Net.Security
 'Imports System.Collections.Specialized
+Imports System.Diagnostics.Debug
 Imports System.Security.Cryptography
 Imports System.Security.Cryptography.X509Certificates
 Imports Newtonsoft.Json
@@ -87,6 +87,7 @@ Friend Class FRM_CONFIG
         If IO.File.Exists(DebugPath) Then
             My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- " & context & " - " & text & Environment.NewLine, True)
         End If
+        Debug.WriteLine(text)
         Return (0)
     End Function
 
@@ -119,7 +120,7 @@ Friend Class FRM_CONFIG
             'Dim MessagePart() As String
             Dim IsSystem As Boolean = Message.StartsWith("SYS:")
 
-                If IsSystem Then
+            If IsSystem Then
 
                     Message = Message.Substring(4)
 
@@ -927,7 +928,7 @@ Friend Class FRM_CONFIG
 
         TryConnectionCount = 6
 
-        ConnectToServer()
+        ConnectToServer("TLS")
 
     End Sub
 
@@ -1002,7 +1003,7 @@ Friend Class FRM_CONFIG
 
     End Sub
 
-    Private Sub ConnectToServer()
+    Private Sub ConnectToServer(Mode As String)
         Dim Nonce As String = ""
         Dim Username As String = TXT_USERNAME.Text.Trim
         Dim Password As String = TXT_PASSWORD.Text.Trim
@@ -1120,7 +1121,7 @@ Friend Class FRM_CONFIG
                     If Nonce.Trim <> "" Then
                         IsLoggedIn = True
                         'Proceed to TCP authentication only if 401 HTTP Status code is given and WWW-AUTHENTICATE is passed
-                        TCPConnection(Username, Password, Nonce)
+                        TCPConnection(Username, Password, Nonce, Mode)
 
                         RegEdit(True)
                     Else
@@ -1133,8 +1134,7 @@ Friend Class FRM_CONFIG
                     Me.IsLoggedIn = True
 
                     Nonce = "Digest 5031d941058935fa578f7f1225973b3ab240a387"
-                    TCPConnection(Username, Password, Nonce)
-
+                    TCPConnection(Username, Password, Nonce, Mode)
                 End If
             Else
                 PrepareDisconnection()
@@ -1263,7 +1263,7 @@ Friend Class FRM_CONFIG
 
         IsAutoConnecting = True
         TryConnectionCount += 1
-        ConnectToServer()
+        ConnectToServer("TLS")
 
     End Sub
 
@@ -1323,7 +1323,7 @@ Friend Class FRM_CONFIG
         EnableProperties(True, True)
     End Sub
 
-    Private Sub TCPConnection(Username As String, Password As String, Nonce As String)
+    Private Sub TCPConnection(Username As String, Password As String, Nonce As String, Mode As String)
         If Me.IsLoggedIn Then
             If Status = EnumStatus.Connecting Then
                 'Reimpostare la variabile, perchè dobbiamo risettarla dopo il successo del secondo login (TCP)
@@ -1338,9 +1338,9 @@ Friend Class FRM_CONFIG
                     _ClickConnected = True
 
                     If NethDebug.IsActive AndAlso NethDebug.USE_DEBUG_TCP_SERVER Then
-                        _Client.Connect(NethDebug.DEBUG_TCP_SERVER_IP.Trim, Convert.ToInt32(NethDebug.DEBUG_TCP_SERVER_PORT.Trim))
+                        _Client.Connect(NethDebug.DEBUG_TCP_SERVER_IP.Trim, Convert.ToInt32(NethDebug.DEBUG_TCP_SERVER_PORT.Trim), Mode)
                     Else
-                        _Client.Connect(Me.TXT_SERVER.Text.Trim, Convert.ToInt32(Me.TXT_PORT.Text.Trim))
+                        _Client.Connect(Me.TXT_SERVER.Text.Trim, Convert.ToInt32(Me.TXT_PORT.Text.Trim), Mode)
                     End If
 
                     'Dim HMACSHA_2 As HMACSHA1 = New HMACSHA1(Encoding.ASCII.GetBytes(Password))
@@ -1811,18 +1811,23 @@ Friend Class FRM_CONFIG
     Private Sub TMR_ICONS_Tick(sender As Object, e As EventArgs) Handles TMR_ICONS.Tick
         'NOTIFY.Icon = GetIcon("reconnect_" & TMR_ICONS.Tag.ToString) 
         Select Case TMR_ICONS.Tag.ToString
-            Case "1"
+            Case "1", "5", "9"
                 NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_1
-            Case "2"
+            Case "2", "6", "10"
                 NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_2
-            Case "3"
+            Case "3", "7", "11"
                 NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_3
-            Case Else
+            Case "4", "8", "12"
                 NOTIFY.Icon = Nethifier.My.Resources.Resources.reconnect_4
+            Case Else
+                InteruptReconnection()
+                ConnectToServer("PLAIN")
         End Select
 
+        Console.WriteLine(Status)
+
         TMR_ICONS.Tag = CInt(TMR_ICONS.Tag) + 1
-        If CInt(TMR_ICONS.Tag) > 4 Then
+        If CInt(TMR_ICONS.Tag) > 13 Then
             TMR_ICONS.Tag = 1
         End If
     End Sub
@@ -1858,11 +1863,13 @@ Friend Class FRM_CONFIG
 
         With Dialer
             If PhoneNumber = "" Then
+                'CALL
                 .Show()
                 .Location = New Drawing.Point(Screen.PrimaryScreen.WorkingArea.Size.Width - Dialer.Width, Screen.PrimaryScreen.WorkingArea.Size.Height - Dialer.Height)
                 .Opacity = 1
                 .Focus()
             Else
+                'SPEEDDIAL
                 .TXT_PHONE_NUMBER.Text = PhoneNumber
                 .DoTelephoneCall()
             End If
@@ -2021,6 +2028,7 @@ Friend Class FRM_CONFIG
         'CALL_TIMER.Enabled = True
 
     End Function
+    ' SPEEDDIAL
     Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
         If m.Msg = WM_HOTKEY Then
             Dim id As IntPtr = m.WParam
@@ -2032,7 +2040,8 @@ Friend Class FRM_CONFIG
                         System.Threading.Thread.Sleep(100)
 
                         Dim Msg As String = Clipboard.GetText
-                        Msg = Replace(Replace(Replace(Msg, "-", ""), "/", ""), " ", "")
+                        'Msg = Replace(Replace(Replace(Msg, "-", ""), "/", ""), " ", "")
+                        Msg = Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Msg, "-", ""), "/", ""), " ", ""), "(", ""), ")", ""), "[", ""), "]", ""), "{", ""), "}", "")
 
                         If IsNumeric(Replace(Msg, "+", "")) Then
 

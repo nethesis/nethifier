@@ -1,39 +1,21 @@
-C:\Lavoro\Nethifier\NethDialer\bin\Debug\NethDialer.exe.config
-C:\Lavoro\Nethifier\NethDialer\bin\Debug\NethDialer.exe
-C:\Lavoro\Nethifier\NethDialer\bin\Debug\NethDialer.pdb
-C:\Lavoro\Nethifier\NethDialer\bin\Debug\NethDialer.xml
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.Form1.resources
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.Resources.resources
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.vbproj.GenerateResource.Cache
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.exe
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.xml
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.pdb
-C:\Lavoro\Nethifier\NethDialer\obj\Debug\NethDialer.vbprojResolveAssemblyReference.cache
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethDialer.exe.config
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethDialer.exe
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethDialer.pdb
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethDialer.xml
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.Form1.resources
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.Resources.resources
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.vbproj.GenerateResource.Cache
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.exe
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.xml
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.pdb
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethUtilities.dll
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethUtilities.pdb
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\bin\Debug\NethUtilities.xml
-C:\Users\Moonlocker\Google Drive\Project\Nethifier\NethDialer\obj\Debug\NethDialer.vbprojResolveAssemblyReference.cache
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethDialer.exe.config
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethDialer.exe
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethDialer.pdb
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethDialer.xml
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethUtilities.dll
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethUtilities.pdb
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\bin\Debug\NethUtilities.xml
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.Form1.resources
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.Resources.resources
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.vbproj.GenerateResource.Cache
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.vbproj.CoreCompileInputs.cache
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.exe
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.xml
-C:\Projects\Source\Workspaces\Neth-Dev\NethDialer\obj\Debug\NethDialer.pdb
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethDialer.exe.config
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethDialer.exe.manifest
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethDialer.application
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethDialer.exe
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethDialer.pdb
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethDialer.xml
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethUtilities.dll
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethUtilities.pdb
+C:\Users\Utente\source\repos\nethifier\NethDialer\bin\Debug\NethUtilities.xml
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.AssemblyReference.cache
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.Form1.resources
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.Resources.resources
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.GenerateResource.cache
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.CoreCompileInputs.cache
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.TrustInfo.xml
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.exe.manifest
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.application
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.CopyComplete
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.exe
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.xml
+C:\Users\Utente\source\repos\nethifier\NethDialer\obj\Debug\NethDialer.pdb

@@ -4,6 +4,7 @@ Imports System.Security.Cryptography.X509Certificates
 Imports System.Text
 Imports System.Web
 Imports System.IO
+Imports System.Diagnostics.Debug
 Imports System.Security.Cryptography
 
 Public Class Form1
@@ -204,9 +205,9 @@ Public Class Form1
 
         credentials = System.Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password))
         'webClient.Headers.Add("Authorization", String.Format("Basic {0}", credentials))
-        ''webClient.Headers.Add("Accept-Encoding", "")
-        ''WebClient.Headers.Add("User-Agent", Guid.NewGuid().ToString)
-        ''WebClient.Encoding = System.Text.Encoding.UTF8
+        webClient.Headers.Add("Accept-Encoding", "")
+        webClient.Headers.Add("User-Agent", Guid.NewGuid().ToString)
+        webClient.Encoding = System.Text.Encoding.UTF8
         If Not (webClient.IsBusy) Then
             Dim result As String
             Try
@@ -214,7 +215,7 @@ Public Class Form1
                 'webClient.AllowAutoRedirect = False
                 webClient.Headers.Add(HttpRequestHeader.Authorization, String.Format("Basic {0}", credentials))
                 result = webClient.DownloadString(URL)
-                'Mylog("ResultCall", result.ToString())
+                Mylog("ResultCall", result.ToString())
             Catch e As WebException
                 Try
                     If InStr(e.Message, "401", CompareMethod.Text) Or InStr(e.Message, "403", CompareMethod.Text) Then
