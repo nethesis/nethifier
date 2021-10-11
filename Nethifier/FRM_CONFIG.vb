@@ -122,54 +122,54 @@ Friend Class FRM_CONFIG
 
             If IsSystem Then
 
-                    Message = Message.Substring(4)
+                Message = Message.Substring(4)
 
-                    If Message.StartsWith(vbCrLf & "ERR_MSG: ") Then
-                        Dim M As String() = Split(Message.Substring((vbCrLf & "ERR_MSG: ").Length), "ERR_NUM: ")
-                        TXT_ERROR_LOG.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & M(0)
+                If Message.StartsWith(vbCrLf & "ERR_MSG: ") Then
+                    Dim M As String() = Split(Message.Substring((vbCrLf & "ERR_MSG: ").Length), "ERR_NUM: ")
+                    TXT_ERROR_LOG.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & M(0)
 
-                        '10054 - Server disconnected
-                        '10060 - Server Response TimeOut
-                        '10053 - Client disconnected
-                        '11004 - Timeout expired
+                    '10054 - Server disconnected
+                    '10060 - Server Response TimeOut
+                    '10053 - Client disconnected
+                    '11004 - Timeout expired
 
-                        If IsNumeric(M(1)) AndAlso (CInt(M(1)) = 10054 OrElse CInt(M(1)) = 10060 OrElse (((CInt(M(1)) = 11004) OrElse CInt(M(1)) = 10053) AndAlso Status <> EnumStatus.Disconnected)) OrElse Status = EnumStatus.Connecting Then
-                            If Status = EnumStatus.Connected AndAlso TryConnectionCount = 0 Then
-                                ShowDisconnectedNotification()
-                            End If
-
-                            'Auto connect
-                            If TryConnectionCount <= 5 Then
-                                ActivateReconnection()
-                            Else
-                                DisableTimer()
-                            End If
+                    If IsNumeric(M(1)) AndAlso (CInt(M(1)) = 10054 OrElse CInt(M(1)) = 10060 OrElse (((CInt(M(1)) = 11004) OrElse CInt(M(1)) = 10053) AndAlso Status <> EnumStatus.Disconnected)) OrElse Status = EnumStatus.Connecting Then
+                        If Status = EnumStatus.Connected AndAlso TryConnectionCount = 0 Then
+                            ShowDisconnectedNotification()
                         End If
 
-                        If Status = EnumStatus.Connecting Then
-                            BUT_CONNECT.Enabled = True
-
-                            '2016/06/29
-                            If CStr(BUT_CONNECT.Tag) = "FORCING_CONNECTION" Then
-                                BUT_CONNECT.Tag = ""
-                                Disconnect()
-                                EnableProperties(True)
-                            End If
-                            '2016/06/29
+                        'Auto connect
+                        If TryConnectionCount <= 5 Then
+                            ActivateReconnection()
                         Else
+                            DisableTimer()
+                        End If
+                    End If
+
+                    If Status = EnumStatus.Connecting Then
+                        BUT_CONNECT.Enabled = True
+
+                        '2016/06/29
+                        If CStr(BUT_CONNECT.Tag) = "FORCING_CONNECTION" Then
+                            BUT_CONNECT.Tag = ""
                             Disconnect()
                             EnableProperties(True)
                         End If
+                        '2016/06/29
                     Else
-                        'NOTIFY.Text = Message
+                        Disconnect()
+                        EnableProperties(True)
                     End If
                 Else
-                    TXT_SERVER_MESSAGES.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & Message & vbCrLf
+                    'NOTIFY.Text = Message
                 End If
+            Else
+                TXT_SERVER_MESSAGES.Text += Now.ToString("yyyy-MM-dd hh:mm:ss") & " - " & Message & vbCrLf
+            End If
 
-                If Message.EndsWith(vbLf) Then
-                    Message = Message.Substring(0, Message.Length - vbLf.Length)
-                End If
+            If Message.EndsWith(vbLf) Then
+                Message = Message.Substring(0, Message.Length - vbLf.Length)
+            End If
             If Message.ToLower.StartsWith("{""notification"":") Then
                 'MessagePart = Split(Message.Substring("notify:".Length), "#")
 
@@ -355,134 +355,134 @@ Friend Class FRM_CONFIG
                 My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Enabled Debug " & Environment.NewLine, True)
 
             ElseIf Message.ToLower.StartsWith("{""action"":""debug-off""") Then
-                        Dim DebugPathF As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
-                        If IO.File.Exists(DebugPathF) Then
-                            My.Computer.FileSystem.WriteAllText(DebugPathF, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Disabled Debug " & Environment.NewLine, True)
+                Dim DebugPathF As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                If IO.File.Exists(DebugPathF) Then
+                    My.Computer.FileSystem.WriteAllText(DebugPathF, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Disabled Debug " & Environment.NewLine, True)
                     Dim DebugPathG As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug" & Format(Date.Now(), "yyyyMMddHHmmss") & ".log")
                     Rename(DebugPathF, DebugPathG)
+                End If
+
+            ElseIf Message.ToLower.StartsWith("{""action"":""reset"",") Then
+                Dim Action As CLS_ACTIONS = New CLS_ACTIONS
+                Dim Comm As New Commands
+
+                JsonConvert.PopulateObject(Message, Action)
+                JsonConvert.PopulateObject(Message.ToLower.Replace("{""action"":""reset"",""type"":""commands"",", "{"), Comm)
+
+                If Action.Action = "reset" Then
+                    Do While True
+                        Dim E As Boolean = True
+                        For Each Com As Command In Config.Commands.Values
+                            Config.Commands.Remove(Com.Command)
+                            E = False
+                            Exit For
+                        Next
+
+                        If E Then
+                            Config.Save()
+                            Exit Do
                         End If
+                    Loop
 
-                    ElseIf Message.ToLower.StartsWith("{""action"":""reset"",") Then
-                        Dim Action As CLS_ACTIONS = New CLS_ACTIONS
-                        Dim Comm As New Commands
+                    ReloadCommands(Comm)
+                End If
 
-                        JsonConvert.PopulateObject(Message, Action)
-                        JsonConvert.PopulateObject(Message.ToLower.Replace("{""action"":""reset"",""type"":""commands"",", "{"), Comm)
+            ElseIf Message.ToLower.StartsWith("{""commands"":") Then
+                Dim St As String() = Split(Message, vbLf)
+                Dim Comm As Commands = New Commands ' = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Commands)(Message)
+                JsonConvert.PopulateObject(St(0), Comm)
 
-                        If Action.Action = "reset" Then
-                            Do While True
-                                Dim E As Boolean = True
-                                For Each Com As Command In Config.Commands.Values
-                                    Config.Commands.Remove(Com.Command)
-                                    E = False
-                                    Exit For
-                                Next
+                ReloadCommands(Comm)
 
-                                If E Then
-                                    Config.Save()
-                                    Exit Do
-                                End If
-                            Loop
+                If St.Length > 1 Then
+                    Dim Colo As String = St(1).ToLower.Trim
 
-                            ReloadCommands(Comm)
+                    If Colo.StartsWith("{""setcolorled"":") Then
+                        LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
+                    End If
+                End If
+
+            ElseIf Message.ToLower.StartsWith("{""setcolorled"":") Then
+                Dim M As String = Message
+
+                If M.IndexOf(vbLf) > 0 Then
+
+
+                    Dim Colors As String() = Split(M, vbLf)
+                    M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
+                    LED(M.Replace(":", "_"))
+                Else
+                    LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
+                End If
+
+            ElseIf Message.StartsWith("{""ring"":") Then
+
+            Else
+                If Message = Msg.GetMessage("STAT_002") Then
+                    Notifications.ClearNotifications()
+                    Disconnect()
+                    EnableProperties(True)
+
+                ElseIf Message = Msg.GetMessage("STAT_001") Then
+                    UserLogin = New Login("login", TXT_USERNAME.Text, Token)
+                    _Client.SendBytes(StrToByteArray(UserLogin.ToString))
+
+                ElseIf Message.ToLower.StartsWith("{""message"":""authe_ok""}") Then
+                    IsAutoConnecting = False
+                    IsLoggedIn = True
+                    Notifications.TCPClient = _Client
+
+                    PingServer.Enabled = True
+
+                    Status = EnumStatus.Connected
+                    EnableProperties(False)
+                    If _ClickConnected Then
+                        Me.Hide()
+                    End If
+                    _ClickConnected = False
+
+                    'NOTIFY.Icon = GetIcon("online")
+                    NOTIFY.Icon = Nethifier.My.Resources.Resources.online
+
+                    With BUT_CONNECT
+                        .Enabled = True
+                        .Tag = "CONF_004"
+                        .Text = Msg.GetMessage(CStr(.Tag))
+                    End With
+
+                    TryConnectionCount = 1
+                    TMR_CONNECTION.Interval = 1
+
+                    With TMR_ICONS
+                        .Enabled = False
+                        .Stop()
+                    End With
+
+                    Dim Icon As Integer = 0
+                    If IsNumeric(Msg.GetMessage("TASK_006")) Then
+                        Icon = CInt(Msg.GetMessage("TASK_006"))
+                        If Not (Icon > 0 AndAlso Icon < 4) Then
+                            Icon = 0
                         End If
-
-                    ElseIf Message.ToLower.StartsWith("{""commands"":") Then
-                        Dim St As String() = Split(Message, vbLf)
-                        Dim Comm As Commands = New Commands ' = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Commands)(Message)
-                        JsonConvert.PopulateObject(St(0), Comm)
-
-                        ReloadCommands(Comm)
-
-                        If St.Length > 1 Then
-                            Dim Colo As String = St(1).ToLower.Trim
-
-                            If Colo.StartsWith("{""setcolorled"":") Then
-                                LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
-                            End If
-                        End If
-
-                    ElseIf Message.ToLower.StartsWith("{""setcolorled"":") Then
-                        Dim M As String = Message
-
-                        If M.IndexOf(vbLf) > 0 Then
-
-
-                            Dim Colors As String() = Split(M, vbLf)
-                            M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
-                            LED(M.Replace(":", "_"))
-                        Else
-                            LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
-                        End If
-
-                    ElseIf Message.StartsWith("{""ring"":") Then
-
-                    Else
-                        If Message = Msg.GetMessage("STAT_002") Then
-                        Notifications.ClearNotifications()
-                        Disconnect()
-                        EnableProperties(True)
-
-                    ElseIf Message = Msg.GetMessage("STAT_001") Then
-                        UserLogin = New Login("login", TXT_USERNAME.Text, Token)
-                        _Client.SendBytes(StrToByteArray(UserLogin.ToString))
-
-                    ElseIf Message.ToLower.StartsWith("{""message"":""authe_ok""}") Then
-                        IsAutoConnecting = False
-                        IsLoggedIn = True
-                        Notifications.TCPClient = _Client
-
-                        PingServer.Enabled = True
-
-                        Status = EnumStatus.Connected
-                        EnableProperties(False)
-                        If _ClickConnected Then
-                            Me.Hide()
-                        End If
-                        _ClickConnected = False
-
-                        'NOTIFY.Icon = GetIcon("online")
-                        NOTIFY.Icon = Nethifier.My.Resources.Resources.online
-
-                        With BUT_CONNECT
-                            .Enabled = True
-                            .Tag = "CONF_004"
-                            .Text = Msg.GetMessage(CStr(.Tag))
-                        End With
-
-                        TryConnectionCount = 1
-                        TMR_CONNECTION.Interval = 1
-
-                        With TMR_ICONS
-                            .Enabled = False
-                            .Stop()
-                        End With
-
-                        Dim Icon As Integer = 0
-                        If IsNumeric(Msg.GetMessage("TASK_006")) Then
-                            Icon = CInt(Msg.GetMessage("TASK_006"))
-                            If Not (Icon > 0 AndAlso Icon < 4) Then
-                                Icon = 0
-                            End If
-                        End If
-
-                        'CallToolStripMenuItem.Enabled = True
-                        NOTIFY.ShowBalloonTip(20, Msg.GetMessage("TASK_004"), Msg.GetMessage("TASK_005"), CType(Icon, ToolTipIcon))
-
-                        STRIP_STATUS.Text = Msg.GetMessage("STAT_001") & " [" & Now.ToString("hh:mm:ss") & "]"
-
-                        LED("online")
-
-                    ElseIf Message.Trim.ToLower = "authe_err" Then
-                        Disconnect()
-                        _Client.Disconnect()
                     End If
 
-                    ' Display all other messages in the status strip.
-                    'If Not dontReport Then Me.ToolStripStatusLabel1.Text = Message
+                    'CallToolStripMenuItem.Enabled = True
+                    NOTIFY.ShowBalloonTip(20, Msg.GetMessage("TASK_004"), Msg.GetMessage("TASK_005"), CType(Icon, ToolTipIcon))
 
+                    STRIP_STATUS.Text = Msg.GetMessage("STAT_001") & " [" & Now.ToString("hh:mm:ss") & "]"
+
+                    LED("online")
+
+                ElseIf Message.Trim.ToLower = "authe_err" Then
+                    Disconnect()
+                    _Client.Disconnect()
                 End If
+
+                ' Display all other messages in the status strip.
+                'If Not dontReport Then Me.ToolStripStatusLabel1.Text = Message
+
             End If
+        End If
 
         'IsAutoConnecting = False
 
@@ -530,6 +530,10 @@ Friend Class FRM_CONFIG
                 Config.Commands.Add(Com.Command, Com)
             End If
         Next
+        '3 Cards trick to upgrade from Plain 8182 to TLS 8183
+        If TXT_PORT.Text = "8182" And BUT_CONNECT.Text = "Disconnetti" And _Client.ForcedTLS Then
+            Config.SERVER_PORT = 8183
+        End If
         Config.Save()
         LoadCommands(Config.Commands, Config)
 
@@ -927,7 +931,6 @@ Friend Class FRM_CONFIG
         '2016/06/29
 
         TryConnectionCount = 6
-
         ConnectToServer("TLS")
 
     End Sub
@@ -1121,6 +1124,7 @@ Friend Class FRM_CONFIG
                     If Nonce.Trim <> "" Then
                         IsLoggedIn = True
                         'Proceed to TCP authentication only if 401 HTTP Status code is given and WWW-AUTHENTICATE is passed
+                        _Client.ForcedTLS = (Mode = "TLS")
                         TCPConnection(Username, Password, Nonce, Mode)
 
                         RegEdit(True)
@@ -1340,7 +1344,11 @@ Friend Class FRM_CONFIG
                     If NethDebug.IsActive AndAlso NethDebug.USE_DEBUG_TCP_SERVER Then
                         _Client.Connect(NethDebug.DEBUG_TCP_SERVER_IP.Trim, Convert.ToInt32(NethDebug.DEBUG_TCP_SERVER_PORT.Trim), Mode)
                     Else
-                        _Client.Connect(Me.TXT_SERVER.Text.Trim, Convert.ToInt32(Me.TXT_PORT.Text.Trim), Mode)
+                        If TXT_PORT.Text = "8182" And Mode = "TLS" Then
+                            _Client.Connect(Me.TXT_SERVER.Text.Trim, 8183, Mode)
+                        Else
+                            _Client.Connect(Me.TXT_SERVER.Text.Trim, Convert.ToInt32(Me.TXT_PORT.Text.Trim), Mode)
+                        End If
                     End If
 
                     'Dim HMACSHA_2 As HMACSHA1 = New HMACSHA1(Encoding.ASCII.GetBytes(Password))
@@ -1377,7 +1385,7 @@ Friend Class FRM_CONFIG
 
     End Sub
 
-    Private Sub RegEdit(IsAutoSave As Boolean)
+    Public Sub RegEdit(IsAutoSave As Boolean)
 
         Try
             Dim CNDX = CMB_MODE.SelectedIndex
@@ -1823,8 +1831,6 @@ Friend Class FRM_CONFIG
                 InteruptReconnection()
                 ConnectToServer("PLAIN")
         End Select
-
-        Console.WriteLine(Status)
 
         TMR_ICONS.Tag = CInt(TMR_ICONS.Tag) + 1
         If CInt(TMR_ICONS.Tag) > 13 Then

@@ -8,6 +8,7 @@ Imports System.Security.Cryptography.X509Certificates
 
 Friend Class TCP_CLIENT
     Public errMsg As String
+    Public ForcedTLS As Boolean
 
     ' Define the delegate type
     Public Delegate Sub ClientCallbackDelegate(ByVal bytes() As Byte)
@@ -117,8 +118,8 @@ Friend Class TCP_CLIENT
             continue_running = True
 
             If (Mode = "TLS") Then
-                'SSL
-                Dim clientCommunicationThread As New Thread(AddressOf RunSSL)
+                'TLS
+                Dim clientCommunicationThread As New Thread(AddressOf RunTLS)
                 clientCommunicationThread.Name = "ClientCommunication"
                 clientCommunicationThread.Start()
             Else
@@ -272,7 +273,8 @@ Friend Class TCP_CLIENT
         isRunning = False
 
     End Sub
-    Private Sub RunSSL()
+    Private Sub RunTLS()
+        Dim Conf As Config = New Config
 
         Dim puck(1) As Byte : puck(0) = 0
         Dim theBuffer(blockSize - 1) As Byte
@@ -296,11 +298,11 @@ Friend Class TCP_CLIENT
             Client.Connect(IP, Port)
             Client.NoDelay = True
             ' Connection Accepted.
-            ' NOSSL
+            ' PLAIN
             'Stream = Client.GetStream()
             'Stream.ReadTimeout = PingInterval
 
-            'SSL
+            'TLS
             Dim callback As RemoteCertificateValidationCallback = New RemoteCertificateValidationCallback(AddressOf CertificateHandler)
             Dim mysslStream As SslStream = New SslStream(Client.GetStream(), False, callback)
             mysslStream.AuthenticateAsClient("Nethifier")
@@ -310,8 +312,8 @@ Friend Class TCP_CLIENT
                 sslStream = mysslStream
             End If
 
-            ' Pass a message up to the user about our status.
-            SystemMessage("SYS:" & Msg.GetMessage("STAT_001"))
+                ' Pass a message up to the user about our status.
+                SystemMessage("SYS:" & Msg.GetMessage("STAT_001"))
             isRunning = True
 
             ' Start the communication loop
@@ -347,7 +349,6 @@ Friend Class TCP_CLIENT
                     WaitingForServerReply.Enabled = True
 
                 End If
-
                 Application.DoEvents()
             Loop
         Catch ex As Exception

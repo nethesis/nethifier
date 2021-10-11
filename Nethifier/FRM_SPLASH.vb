@@ -25,19 +25,21 @@ Public NotInheritable Class FRM_SPLASH
             My.Computer.FileSystem.WriteAllText(DebugPath, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Execution with args: " & String.Join(", ", arguments).Replace(Environment.NewLine, " ") & Environment.NewLine, True)
         End If
 
+        Dim p() As Process
+        p = Process.GetProcessesByName("Nethifier")
+        If p.Length > 1 And My.Application.CommandLineArgs.Contains("-e") Then
+            MsgBox("Un'altra istanza di Nethifier è già in esecuzione.")
+            Application.Exit()
+            End
+        End If
+
         Dim RunningProcess As Process = Nothing
 
         Try
-            'Me.BUT_EXIT.Image = GetImage("close.gif")
             Me.BUT_EXIT.Image = Nethifier.My.Resources.Resources.close
         Catch ex As Exception
             Console.WriteLine("No close img")
         End Try
-
-        If My.Application.CommandLineArgs.Contains("-R") Then
-            RunAs("-e")
-            Application.Exit()
-        End If
 
         If Not My.Computer.FileSystem.FileExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() & "\" & Application.ProductName & "\config.ini") And Not My.Application.CommandLineArgs.Contains("-e") Then
             RunAs("-e")
@@ -141,7 +143,7 @@ Public NotInheritable Class FRM_SPLASH
                         End Try
                     End If
                     Exit Sub
-                ElseIf My.Application.CommandLineArgs.Contains("-e") Then
+                ElseIf My.Application.CommandLineArgs.Contains("-e") Or My.Application.CommandLineArgs.Contains("-R") Then
 
                     'Do Execute
                     Dim Config As New FRM_CONFIG
@@ -153,30 +155,6 @@ Public NotInheritable Class FRM_SPLASH
 
                     'Reloaded
                     If Helper.IsRunAsAdmin Then
-                        'Dim ApplicationPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
-                        'Dim Lang As String() = IO.Directory.GetFiles(Application.StartupPath & "\languages")
-                        'For I As Integer = 0 To Lang.Length - 1
-                        'Dim X As Integer = Lang(I).LastIndexOf("\")
-                        'IO.File.Copy(Lang(I), ApplicationPath & "\languages" & Lang(I).Substring(X, Lang(I).Length - X), True)
-                        'Next
-
-                        'Dim Res As String() = Directory.GetFiles(Application.StartupPath & "\resources")
-                        'For I As Integer = 0 To Res.Length - 1
-                        'Dim X As Integer = Res(I).LastIndexOf("\")
-                        'IO.File.Copy(Res(I), ApplicationPath & "\resources" & Res(I).Substring(X, Res(I).Length - X), True)
-                        'Next
-
-                        '
-                        'Dim Version As String = IO.Path.Combine(Application.StartupPath, "Version.inf")
-                        'If File.Exists(Version) Then
-                        '                        IO.File.Copy(Version, IO.Path.Combine(ApplicationPath, "Version.inf"), True)
-                        'End If
-
-                        'Dim UpdateURL As String = IO.Path.Combine(Application.StartupPath, "Update.url")
-                        'If File.Exists(UpdateURL) Then
-                        'IO.File.Copy(UpdateURL, IO.Path.Combine(ApplicationPath, "Update.url"), True)
-                        'End If
-
                         ReloadSettings()
 
                         'Do Execute
