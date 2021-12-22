@@ -742,7 +742,8 @@ Friend Class FRM_CONFIG
             'LoadDial(CMB_SPEEDDIAL_HOTKEY, "PlayPause", .MOD_SPEED_DIAL, 256)
             LoadDial(CMB_SPEEDDIAL_HOTKEY, TXT_SPEEDDIAL_HOTKEY, .MOD_SPEED_DIAL, 100)
             LoadDial(CMB_REDIAL_HOTKEY, TXT_REDIAL_HOTKEY, .MOD_REDIAL, 200)
-            RegisterHotKey(Me.Handle, 101, 2, 118)
+            'CTRL+F7 
+            'RegisterHotKey(Me.Handle, 101, 2, 118)
             LoadCommands(.Commands, Config)
 
             TXT_SOUND.Text = .SOUND_FILE
