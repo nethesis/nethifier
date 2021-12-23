@@ -92,6 +92,11 @@ namespace NethHeadPhone
 
                 if (aHidEvent.IsButtonDown)
                 {
+                    string ME = CallApi("GET", "user/me", "");
+                    dynamic mydata = JObject.Parse(ME);
+                    Ext = (string)mydata.default_device.id;
+                    Type = (string)mydata.default_device.type;
+
                     notifyIcon1.Visible = !notifyIcon1.Visible;
                     string ST = CallApi("GET", "astproxy/extension/" + Ext, "");
                     dynamic data = JObject.Parse(ST);                    
@@ -146,17 +151,13 @@ namespace NethHeadPhone
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Token=GetToken();
-            
-            string ME=CallApi("GET","user/me","");
-            dynamic data = JObject.Parse(ME);
-            Ext=(string)data.default_device.id;
-            Type=(string)data.default_device.type;
+            //Token=GetToken();
         }
         private string CallApi(string Method,string API, string payload)
         {
             string Url = "https://" + host + "/webrest/"+API;
             string data = "";
+            string W;
             WebRequest s = WebRequest.Create(Url);
             s.Method = Method;
             s.Headers.Add("Authorization", username + ":" + Token);
@@ -168,14 +169,23 @@ namespace NethHeadPhone
                     SW.Write(payload);
                 }
             }
-            WebResponse R=s.GetResponse();
-            using (Stream dataStream = R.GetResponseStream())
-            {
-                StreamReader reader = new StreamReader(dataStream);
-                data = reader.ReadToEnd();
+            try { 
+                WebResponse R=s.GetResponse();
+                using (Stream dataStream = R.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(dataStream);
+                    data = reader.ReadToEnd();
+                }
+                R.Close();
+                W= WebUtility.HtmlDecode(data);
             }
-            R.Close();
-            return WebUtility.HtmlDecode(data);
+            catch
+            {
+                Token = GetToken();
+                W= CallApi("GET", "user/me", "");
+            }
+            
+            return W; 
         }
 
         private string GetToken() 
