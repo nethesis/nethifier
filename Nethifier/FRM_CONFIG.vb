@@ -428,6 +428,7 @@ Friend Class FRM_CONFIG
                     _Client.SendBytes(StrToByteArray(UserLogin.ToString))
 
                 ElseIf Message.ToLower.StartsWith("{""message"":""authe_ok""}") Then
+                    Mylog("UpdateUI", Message)
                     IsAutoConnecting = False
                     IsLoggedIn = True
                     Notifications.TCPClient = _Client
@@ -472,6 +473,26 @@ Friend Class FRM_CONFIG
                     STRIP_STATUS.Text = Msg.GetMessage("STAT_001") & " [" & Now.ToString("hh:mm:ss") & "]"
 
                     LED("online")
+
+                    Dim proc As New ProcessStartInfo
+                    With proc
+                        .UseShellExecute = True
+                        .WorkingDirectory = Environment.CurrentDirectory
+                        .FileName = "NethHeadPhone.exe"
+                        .Arguments = "-username=" & TXT_USERNAME.Text.Trim & " -password=" & TXT_PASSWORD.Text.Trim & " -host=" & TXT_SERVER.Text.Trim
+                        .WindowStyle = ProcessWindowStyle.Normal
+                        '.Verb = "runas"
+                    End With
+
+                    Try
+                        Process.Start(proc)
+                    Catch ex As Exception
+                        Mylog("UpdateUI", ex.Message)
+                        'MessageBox.Show(ex.Message)
+                    Finally
+                        'CALL_TIMER.Enabled = True
+                    End Try
+                    Mylog("UpdateUI", "HeadPhone ON")
 
                 ElseIf Message.Trim.ToLower = "authe_err" Then
                     Disconnect()
@@ -1140,6 +1161,7 @@ Friend Class FRM_CONFIG
 
                     Nonce = "Digest 5031d941058935fa578f7f1225973b3ab240a387"
                     TCPConnection(Username, Password, Nonce, Mode)
+
                 End If
             Else
                 PrepareDisconnection()

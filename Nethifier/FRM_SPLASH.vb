@@ -281,23 +281,7 @@ Public NotInheritable Class FRM_SPLASH
     End Function
 
     Private Sub RunAs(Arg As String)
-        Dim proc As New ProcessStartInfo
-        With proc
-            .UseShellExecute = True
-            .WorkingDirectory = Environment.CurrentDirectory
-            .FileName = Application.ExecutablePath
-            .Arguments = Arg
-            .Verb = "runas"
-        End With
 
-        Try
-            Application.Exit()
-            Process.Start(proc)
-        Catch ex As Exception
-            ' The user refused the elevation. 
-            ' Do nothing and return directly ... 
-            MessageBox.Show(ex.Message)
-        End Try
     End Sub
 
     Private Sub BUT_RUN_Click(sender As Object, e As EventArgs) Handles BUT_RUN.Click

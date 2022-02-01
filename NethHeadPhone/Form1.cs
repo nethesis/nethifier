@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using Hid = SharpLib.Hid;
+using System.Threading;
 
 namespace NethHeadPhone
 {
@@ -29,6 +30,7 @@ namespace NethHeadPhone
         public string password = "";
         public string host = "";
         public string Token = "";
+        public int retry = 1;
 
         string Ext;
         string Type;
@@ -36,8 +38,9 @@ namespace NethHeadPhone
         public HeadPhone()
         {
             InitializeComponent();
-            
-            foreach(string Arg in Environment.GetCommandLineArgs()) {
+            Trace.WriteLine("Initialized");
+
+            foreach (string Arg in Environment.GetCommandLineArgs()) {
                 if (Arg.ToLower().StartsWith("-username=")) {
                     username = Arg.Remove(0, "-username=".Length);
                 } else if (Arg.ToLower().StartsWith("-password=")) { 
@@ -47,23 +50,29 @@ namespace NethHeadPhone
                 }                
             }
 
+            if (host.Length==0) {
+                MessageBox.Show("HeadPhone not running");
+                System.Environment.Exit(1);
+            }
+
+            Trace.WriteLine("Read Parms..");
 
             RAWINPUTDEVICE[] rid = new RAWINPUTDEVICE[1];
             rid[0].usUsagePage = (ushort)SharpLib.Hid.UsagePage.Telephony;
             rid[0].usUsage = (ushort)SharpLib.Hid.UsageCollection.Telephony.Headset;
             rid[0].dwFlags = (RawInputDeviceFlags)256;
             rid[0].hwndTarget = Handle;
+            Trace.WriteLine("Rid defined..");
             iHidHandler = new SharpLib.Hid.Handler(rid, false, -1, -1);
             iHidParser = iHidHandler;
             iHidParser.OnHidEvent += HandleHidEventThreadSafe;
-
+            Trace.WriteLine("Handle Hid");
             //notifyIcon1.Icon = new System.Drawing.Icon(System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal) + @"\Icon.ico");
-            components = new System.ComponentModel.Container();
-            notifyIcon1 = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon1.Icon = new System.Drawing.Icon("App.ico");
-            notifyIcon1.Visible = false;
-            notifyIcon1.Text = "Incoming call";
-
+            //components = new System.ComponentModel.Container();
+            //notifyIcon1 = new System.Windows.Forms.NotifyIcon(components);
+            //notifyIcon1.Icon = new System.Drawing.Icon("App.ico");
+            //notifyIcon1.Visible = true;
+            //notifyIcon1.Text = "Incoming call";
         }
         public void HandleHidEventThreadSafe(object aSender, SharpLib.Hid.Event aHidEvent)
         {
@@ -88,22 +97,27 @@ namespace NethHeadPhone
                 {
                     //toolStripStatusLabelDevice.Text = aHidEvent.Device.FriendlyName;
                 }
-                //Debug.Write(aHidEvent.ToLog());
+                Trace.WriteLine(aHidEvent.ToLog().Replace(Environment.NewLine, ""));
+                //Trace.WriteLine("x VIC: " + (aHidEvent.IsButtonUp) + " " + aHidEvent.ToString().Contains("Input Report: 0x0800") +" "+ aHidEvent.Device.VendorId.Equals(0x047F) +" " + aHidEvent.Device.ProductId.Equals(0xC056));
 
-                if (aHidEvent.IsButtonDown)
+                if (((aHidEvent.IsButtonDown) & (aHidEvent.ToString().Contains("HookSwitch (0x0020)") | aHidEvent.ToString().Contains("LineBusyTone (0x0097)"))))
+                //if ((aHidEvent.IsButtonDown) & aHidEvent.Usages.Contains(32))
                 {
-                    notifyIcon1.Visible = !notifyIcon1.Visible;
+                    //notifyIcon1.Visible = !notifyIcon1.Visible;
                     string ST = CallApi("GET", "astproxy/extension/" + Ext, "");
-                    dynamic data = JObject.Parse(ST);                    
+                    dynamic data = JObject.Parse(ST);
                     string Status = (string)data.status;
+                    Trace.WriteLine("Button click: " + Status + " with " + Ext.ToString());
                     string Ans, Hang;
                     switch (Status)
                     {
                         case "ringing":
-                            if (Type == "webrtc") {
+                            if (Type == "webrtc")
+                            {
                                 Ans = CallApi("POST", "astproxy/answer_webrtc", "{\"endpointId\":\"" + Ext + "\",\"endpointType\":\"extension\"}");
                             }
-                            else {
+                            else
+                            {
                                 Ans = CallApi("POST", "astproxy/answer", "{\"endpointId\":\"" + Ext + "\",\"endpointType\":\"extension\"}");
                             }
                             break;
@@ -111,9 +125,9 @@ namespace NethHeadPhone
                             string Conv = "";
                             foreach (JProperty Convx in data.conversations.Properties())
                             {
-                                Conv=(string)Convx.Name.ToString();
+                                Conv = (string)Convx.Name.ToString();
                             }
-                            Hang = CallApi("POST", "astproxy/hangup", "{\"convid\":\""+Conv+"\",\"endpointId\":\""+Ext+"\"}");
+                            Hang = CallApi("POST", "astproxy/hangup", "{\"convid\":\"" + Conv + "\",\"endpointId\":\"" + Ext + "\"}");
                             break;
                         case "online":
                             break;
@@ -122,7 +136,6 @@ namespace NethHeadPhone
                     }
                 }
             }
-
         }
         protected override void WndProc(ref Message message)
         {
@@ -147,35 +160,56 @@ namespace NethHeadPhone
         private void Form1_Load(object sender, EventArgs e)
         {
             Token=GetToken();
-            
+            Trace.WriteLine("Got Token..");
+
             string ME=CallApi("GET","user/me","");
+            Trace.WriteLine("Called API: me");
             dynamic data = JObject.Parse(ME);
             Ext=(string)data.default_device.id;
             Type=(string)data.default_device.type;
+            Trace.WriteLine("Loaded..");
+            Token = "";
         }
         private string CallApi(string Method,string API, string payload)
         {
             string Url = "https://" + host + "/webrest/"+API;
             string data = "";
-            WebRequest s = WebRequest.Create(Url);
-            s.Method = Method;
-            s.Headers.Add("Authorization", username + ":" + Token);
-            if ((payload.Length>0)) 
-            { 
-                s.ContentType = "application/json";
-                using (StreamWriter SW = new StreamWriter(s.GetRequestStream()))
-                {
-                    SW.Write(payload);
-                }
-            }
-            WebResponse R=s.GetResponse();
-            using (Stream dataStream = R.GetResponseStream())
+            try
             {
-                StreamReader reader = new StreamReader(dataStream);
-                data = reader.ReadToEnd();
+                WebRequest s = WebRequest.Create(Url);
+                s.Method = Method;
+                s.Headers.Add("Authorization", username + ":" + Token);
+                if ((payload.Length>0)) 
+                { 
+                    s.ContentType = "application/json";
+                    using (StreamWriter SW = new StreamWriter(s.GetRequestStream()))
+                    {
+                        SW.Write(payload);
+                    }
+                }
+                WebResponse R=s.GetResponse();
+                using (Stream dataStream = R.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(dataStream);
+                    data = reader.ReadToEnd();
+                }
+                R.Close();
+                retry = 1;
+                return WebUtility.HtmlDecode(data);
             }
-            R.Close();
-            return WebUtility.HtmlDecode(data);
+            catch
+            {
+                Thread.Sleep(10000*retry);
+                retry=retry*2;
+                if (retry > 32)
+                    {
+                        MessageBox.Show("Per l'utilizzo della cuffia è necessario rilanciare Nethifier.");
+                        System.Environment.Exit(1);
+                    }
+                Token = GetToken();
+                return CallApi(Method, API, payload); 
+            }
+            
         }
 
         private string GetToken() 
@@ -261,3 +295,4 @@ namespace NethHeadPhone
         }
     }
 }
+

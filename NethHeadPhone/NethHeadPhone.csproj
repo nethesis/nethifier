@@ -102,12 +102,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeadPhone-Button\Project\Hid\Hid.csproj">
-      <Project>{9150a71f-b8f1-4fab-ad85-24f5c09bc299}</Project>
-      <Name>Hid</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="App.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -123,6 +117,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeadPhone-Button\Project\Hid\Hid.csproj">
+      <Project>{9150a71f-b8f1-4fab-ad85-24f5c09bc299}</Project>
+      <Name>Hid</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
