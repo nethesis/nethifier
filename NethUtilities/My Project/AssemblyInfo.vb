@@ -11,8 +11,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Nethifier")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("Nethifier")> 
-<Assembly: AssemblyCopyright("Copyright ©  2017")> 
+<Assembly: AssemblyProduct("Nethifier")>
+<Assembly: AssemblyCopyright("Copyright ©  2022")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("3.0.4.0")>
-<Assembly: AssemblyFileVersion("3.0.4.0")>
+<Assembly: AssemblyVersion("3.0.7.0")>
+<Assembly: AssemblyFileVersion("3.0.7.0")>

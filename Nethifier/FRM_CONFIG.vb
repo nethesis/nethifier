@@ -473,6 +473,28 @@ Friend Class FRM_CONFIG
 
                     LED("online")
 
+                    Dim oldproc = Process.GetProcessesByName("NethHeadPhone")
+                    For i As Integer = 0 To oldproc.Count - 1
+                        oldproc(i).CloseMainWindow()
+                    Next i
+
+                    Dim proc As New ProcessStartInfo
+                    With proc
+                        .UseShellExecute = True
+                        .WorkingDirectory = Environment.CurrentDirectory
+                        .FileName = "NethHeadPhone.exe"
+                        .Arguments = "-username=" & TXT_USERNAME.Text.Trim & " -password=" & TXT_PASSWORD.Text.Trim & " -host=" & TXT_SERVER.Text.Trim
+                        .WindowStyle = ProcessWindowStyle.Normal
+                    End With
+
+                    Try
+                        Process.Start(proc)
+                    Catch ex As Exception
+                        Mylog("UpdateUI", ex.Message)
+                    Finally
+                    End Try
+                    Mylog("UpdateUI", "HeadPhone ON")
+
                 ElseIf Message.Trim.ToLower = "authe_err" Then
                     Disconnect()
                     _Client.Disconnect()
