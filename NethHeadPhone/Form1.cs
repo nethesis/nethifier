@@ -16,9 +16,12 @@ using System.Windows.Forms;
 using System.Security.Cryptography;
 using Hid = SharpLib.Hid;
 using System.Threading;
+using System.ServiceProcess;
+using Microsoft.Win32;
 
 namespace NethHeadPhone
 {
+
     public partial class HeadPhone : Form
     {
         public System.Windows.Forms.NotifyIcon notifyIcon1;
@@ -38,6 +41,8 @@ namespace NethHeadPhone
         public HeadPhone()
         {
             InitializeComponent();
+            SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler((sender, e) => SystemEvents_PowerModeChanged(sender,e,Token));
+            SystemEvents.SessionSwitch += new SessionSwitchEventHandler((sender, e) => SystemEvents_SessionSwitch(sender, e, Token));
             Trace.WriteLine("Initialized");
 
             foreach (string Arg in Environment.GetCommandLineArgs()) {
@@ -69,7 +74,23 @@ namespace NethHeadPhone
             Trace.WriteLine("Handle Hid");
 
         }
-        public void HandleHidEventThreadSafe(object aSender, SharpLib.Hid.Event aHidEvent)
+        static void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e, string Token)
+        {
+            Trace.WriteLine(e.Mode);
+            if (e.Mode.ToString().ToLower() == "resume")
+            {
+                Token = "";
+            }
+        }
+        static void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e, string Token)
+        {
+            Trace.WriteLine(e.Reason);
+            if (e.Reason.ToString().ToLower() == "unlock")
+            {
+                Token = "";
+            }
+        }
+            public void HandleHidEventThreadSafe(object aSender, SharpLib.Hid.Event aHidEvent)
         {
             if (aHidEvent.IsStray)
             {
@@ -148,10 +169,13 @@ namespace NethHeadPhone
             Ext=(string)data.default_device.id;
             Type=(string)data.default_device.type;
             Trace.WriteLine("Loaded..");
-            Token = "";
         }
         private string CallApi(string Method,string API, string payload)
         {
+            if (Token=="") 
+            { 
+                Token = GetToken(); 
+            }
             string Url = "https://" + host + "/webrest/"+API;
             string data = "";
             try
@@ -179,7 +203,7 @@ namespace NethHeadPhone
             }
             catch
             {
-                Thread.Sleep(10000*retry);
+                Thread.Sleep(1000*retry);
                 retry=retry*2;
                 if (retry > 32)
                     {
