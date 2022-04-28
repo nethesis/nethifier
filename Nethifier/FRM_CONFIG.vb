@@ -214,8 +214,10 @@ Friend Class FRM_CONFIG
                                     'NOTIFY.Icon = GetIcon("chat")
                                     NOTIFY.Icon = Nethifier.My.Resources.Resources.chat
                                     StartRinging()
-
-                                Else
+                                    'PARAMURL ALLO SQUILLO
+                                    If CMB_PARAM.Text = "ALLO SQUILLO" Then
+                                        ParamUrl("https://www.nethesis.it")
+                                    End If
                                     _Client.SendBytes("{""error"":{""id"":""" & ID & """,""message"":""still active""}}")
                                 End If
                             Case Is = "TERMINATE"
@@ -255,6 +257,10 @@ Friend Class FRM_CONFIG
             ElseIf Message.ToLower.StartsWith("{""extenconnected"":") Then
 
                 StopRinging()
+                'PARAMURL ALLA RISPOSTA
+                If CMB_PARAM.Text = "ALLA RISPOSTA" Then
+                    ParamUrl("https://www.nethesis.it")
+                End If
                 LED("busy")
 
             ElseIf Message.ToLower.StartsWith("{""ping"":""active""}") Then
@@ -2183,6 +2189,15 @@ Friend Class FRM_CONFIG
             End If
         End If
     End Sub
+    Private Sub ParamUrl(URL As String)
+        If _Browsers.Count > 0 Then
+            If _Browsers.ContainsKey("chrome.exe") Then
+                System.Diagnostics.Process.Start("chrome.exe", URL)
+            ElseIf _Browsers.ContainsKey("firefox.exe") Then
+                System.Diagnostics.Process.Start("firefox.exe", URL)
+            End If
+        End If
+    End Sub
 
     Private Sub Wave_PlaybackStopped(sender As Object, e As StoppedEventArgs) Handles Wave.PlaybackStopped
 
@@ -2265,6 +2280,21 @@ Friend Class FRM_CONFIG
                 End If
             End If
         End If
+    End Sub
+
+    Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
+        GRP_PARAMS.Enabled = CheckBox1.Checked
+
+        If CMB_PARAM.Text = "" Then
+            CMB_PARAM.SelectedValue = "ALLA RISPOSTA"
+            CMB_PARAM.Text = "ALLA RISPOSTA"
+        End If
+        Refresh()
+
+    End Sub
+
+    Private Sub GroupBox2_Enter(sender As Object, e As EventArgs) Handles GRP_PARAMS.Enter
+
     End Sub
 
     'FOR DIALER

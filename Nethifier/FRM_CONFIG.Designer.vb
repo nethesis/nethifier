@@ -75,6 +75,11 @@ Partial Class FRM_CONFIG
         Me.TXT_SPEEDDIAL_HOTKEY = New System.Windows.Forms.TextBox()
         Me.CMB_SPEEDDIAL_HOTKEY = New System.Windows.Forms.ComboBox()
         Me.TAB_006 = New System.Windows.Forms.TabPage()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.CHK_ANSWER = New System.Windows.Forms.CheckBox()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
+        Me.CHK_ONEKEY = New System.Windows.Forms.CheckBox()
         Me.CHK_SUONERIA = New System.Windows.Forms.CheckBox()
         Me.GRP_SUONERIA = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -92,11 +97,11 @@ Partial Class FRM_CONFIG
         Me.TMR_ELAPSE = New System.Windows.Forms.Timer(Me.components)
         Me.TMR_ICONS = New System.Windows.Forms.Timer(Me.components)
         Me.TMR_DEVICE = New System.Windows.Forms.Timer(Me.components)
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
-        Me.CHK_ONEKEY = New System.Windows.Forms.CheckBox()
-        Me.CHK_ANSWER = New System.Windows.Forms.CheckBox()
+        Me.TAB_007 = New System.Windows.Forms.TabPage()
+        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
+        Me.GRP_PARAMS = New System.Windows.Forms.GroupBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.CMB_PARAM = New System.Windows.Forms.ComboBox()
         Me.StatusStrip1.SuspendLayout()
         Me.gbIpAddress.SuspendLayout()
         Me.gbServerPort.SuspendLayout()
@@ -110,8 +115,10 @@ Partial Class FRM_CONFIG
         Me.TAB_004.SuspendLayout()
         Me.TAB_005.SuspendLayout()
         Me.TAB_006.SuspendLayout()
-        Me.GRP_SUONERIA.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
+        Me.GRP_SUONERIA.SuspendLayout()
+        Me.TAB_007.SuspendLayout()
+        Me.GRP_PARAMS.SuspendLayout()
         Me.SuspendLayout()
         '
         'BUT_CONNECT
@@ -260,6 +267,7 @@ Partial Class FRM_CONFIG
         Me.TABS.Controls.Add(Me.TAB_004)
         Me.TABS.Controls.Add(Me.TAB_005)
         Me.TABS.Controls.Add(Me.TAB_006)
+        Me.TABS.Controls.Add(Me.TAB_007)
         Me.TABS.Location = New System.Drawing.Point(0, 1)
         Me.TABS.Name = "TABS"
         Me.TABS.SelectedIndex = 0
@@ -582,6 +590,61 @@ Partial Class FRM_CONFIG
         Me.TAB_006.Text = "Ringtone"
         Me.TAB_006.UseVisualStyleBackColor = True
         '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.CHK_ANSWER)
+        Me.GroupBox1.Controls.Add(Me.Label5)
+        Me.GroupBox1.Controls.Add(Me.ComboBox1)
+        Me.GroupBox1.Controls.Add(Me.CHK_ONEKEY)
+        Me.GroupBox1.Enabled = False
+        Me.GroupBox1.Location = New System.Drawing.Point(6, 112)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(392, 71)
+        Me.GroupBox1.TabIndex = 9
+        Me.GroupBox1.TabStop = False
+        '
+        'CHK_ANSWER
+        '
+        Me.CHK_ANSWER.AutoSize = True
+        Me.CHK_ANSWER.BackColor = System.Drawing.Color.White
+        Me.CHK_ANSWER.Location = New System.Drawing.Point(6, -1)
+        Me.CHK_ANSWER.Name = "CHK_ANSWER"
+        Me.CHK_ANSWER.Size = New System.Drawing.Size(169, 17)
+        Me.CHK_ANSWER.TabIndex = 9
+        Me.CHK_ANSWER.Text = "Abilita risposta con tasto cuffia"
+        Me.CHK_ANSWER.UseVisualStyleBackColor = False
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(6, 25)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(41, 13)
+        Me.Label5.TabIndex = 1
+        Me.Label5.Text = "Device"
+        '
+        'ComboBox1
+        '
+        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox1.FormattingEnabled = True
+        Me.ComboBox1.Location = New System.Drawing.Point(53, 22)
+        Me.ComboBox1.Name = "ComboBox1"
+        Me.ComboBox1.Size = New System.Drawing.Size(330, 21)
+        Me.ComboBox1.TabIndex = 0
+        '
+        'CHK_ONEKEY
+        '
+        Me.CHK_ONEKEY.AutoSize = True
+        Me.CHK_ONEKEY.Enabled = False
+        Me.CHK_ONEKEY.Location = New System.Drawing.Point(53, 49)
+        Me.CHK_ONEKEY.Name = "CHK_ONEKEY"
+        Me.CHK_ONEKEY.Size = New System.Drawing.Size(308, 17)
+        Me.CHK_ONEKEY.TabIndex = 6
+        Me.CHK_ONEKEY.Text = "Usa un solo tasto per rispondere e per terminare la chiamata"
+        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo il check, la suoneria sarà esguita una volta sola all'arrivo della chia" &
+        "mata")
+        Me.CHK_ONEKEY.UseVisualStyleBackColor = True
+        '
         'CHK_SUONERIA
         '
         Me.CHK_SUONERIA.AutoSize = True
@@ -716,60 +779,57 @@ Partial Class FRM_CONFIG
         Me.TMR_DEVICE.Enabled = True
         Me.TMR_DEVICE.Interval = 1000
         '
-        'GroupBox1
+        'TAB_007
         '
-        Me.GroupBox1.Controls.Add(Me.CHK_ANSWER)
-        Me.GroupBox1.Controls.Add(Me.Label5)
-        Me.GroupBox1.Controls.Add(Me.ComboBox1)
-        Me.GroupBox1.Controls.Add(Me.CHK_ONEKEY)
-        Me.GroupBox1.Enabled = False
-        Me.GroupBox1.Location = New System.Drawing.Point(6, 112)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(392, 71)
-        Me.GroupBox1.TabIndex = 9
-        Me.GroupBox1.TabStop = False
+        Me.TAB_007.Controls.Add(Me.CheckBox1)
+        Me.TAB_007.Controls.Add(Me.GRP_PARAMS)
+        Me.TAB_007.Location = New System.Drawing.Point(4, 22)
+        Me.TAB_007.Name = "TAB_007"
+        Me.TAB_007.Padding = New System.Windows.Forms.Padding(3)
+        Me.TAB_007.Size = New System.Drawing.Size(405, 265)
+        Me.TAB_007.TabIndex = 6
+        Me.TAB_007.Text = "ParamURL"
+        Me.TAB_007.UseVisualStyleBackColor = True
         '
-        'Label5
+        'CheckBox1
         '
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(6, 25)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(41, 13)
-        Me.Label5.TabIndex = 1
-        Me.Label5.Text = "Device"
+        Me.CheckBox1.AutoSize = True
+        Me.CheckBox1.Location = New System.Drawing.Point(9, 3)
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.Size = New System.Drawing.Size(138, 17)
+        Me.CheckBox1.TabIndex = 10
+        Me.CheckBox1.Text = "Abilita URL Parametrico"
+        Me.CheckBox1.UseVisualStyleBackColor = True
         '
-        'ComboBox1
+        'GRP_PARAMS
         '
-        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBox1.FormattingEnabled = True
-        Me.ComboBox1.Location = New System.Drawing.Point(53, 22)
-        Me.ComboBox1.Name = "ComboBox1"
-        Me.ComboBox1.Size = New System.Drawing.Size(330, 21)
-        Me.ComboBox1.TabIndex = 0
+        Me.GRP_PARAMS.Controls.Add(Me.CMB_PARAM)
+        Me.GRP_PARAMS.Controls.Add(Me.Label6)
+        Me.GRP_PARAMS.Enabled = False
+        Me.GRP_PARAMS.Location = New System.Drawing.Point(3, 3)
+        Me.GRP_PARAMS.Name = "GRP_PARAMS"
+        Me.GRP_PARAMS.Size = New System.Drawing.Size(392, 98)
+        Me.GRP_PARAMS.TabIndex = 9
+        Me.GRP_PARAMS.TabStop = False
         '
-        'CHK_ONEKEY
+        'Label6
         '
-        Me.CHK_ONEKEY.AutoSize = True
-        Me.CHK_ONEKEY.Enabled = False
-        Me.CHK_ONEKEY.Location = New System.Drawing.Point(53, 49)
-        Me.CHK_ONEKEY.Name = "CHK_ONEKEY"
-        Me.CHK_ONEKEY.Size = New System.Drawing.Size(308, 17)
-        Me.CHK_ONEKEY.TabIndex = 6
-        Me.CHK_ONEKEY.Text = "Usa un solo tasto per rispondere e per terminare la chiamata"
-        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo il check, la suoneria sarà esguita una volta sola all'arrivo della chia" &
-        "mata")
-        Me.CHK_ONEKEY.UseVisualStyleBackColor = True
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(6, 25)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(31, 13)
+        Me.Label6.TabIndex = 1
+        Me.Label6.Text = "Mod."
         '
-        'CHK_ANSWER
+        'CMB_PARAM
         '
-        Me.CHK_ANSWER.AutoSize = True
-        Me.CHK_ANSWER.BackColor = System.Drawing.Color.White
-        Me.CHK_ANSWER.Location = New System.Drawing.Point(6, -1)
-        Me.CHK_ANSWER.Name = "CHK_ANSWER"
-        Me.CHK_ANSWER.Size = New System.Drawing.Size(169, 17)
-        Me.CHK_ANSWER.TabIndex = 9
-        Me.CHK_ANSWER.Text = "Abilita risposta con tasto cuffia"
-        Me.CHK_ANSWER.UseVisualStyleBackColor = False
+        Me.CMB_PARAM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CMB_PARAM.FormattingEnabled = True
+        Me.CMB_PARAM.Items.AddRange(New Object() {"ALLA RISPOSTA", "ALLO SQUILLO"})
+        Me.CMB_PARAM.Location = New System.Drawing.Point(54, 17)
+        Me.CMB_PARAM.Name = "CMB_PARAM"
+        Me.CMB_PARAM.Size = New System.Drawing.Size(332, 21)
+        Me.CMB_PARAM.TabIndex = 1
         '
         'FRM_CONFIG
         '
@@ -809,10 +869,14 @@ Partial Class FRM_CONFIG
         Me.TAB_005.PerformLayout()
         Me.TAB_006.ResumeLayout(False)
         Me.TAB_006.PerformLayout()
-        Me.GRP_SUONERIA.ResumeLayout(False)
-        Me.GRP_SUONERIA.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        Me.GRP_SUONERIA.ResumeLayout(False)
+        Me.GRP_SUONERIA.PerformLayout()
+        Me.TAB_007.ResumeLayout(False)
+        Me.TAB_007.PerformLayout()
+        Me.GRP_PARAMS.ResumeLayout(False)
+        Me.GRP_PARAMS.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -890,4 +954,9 @@ Partial Class FRM_CONFIG
     Friend WithEvents Label5 As Label
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents CHK_ONEKEY As CheckBox
+    Friend WithEvents TAB_007 As TabPage
+    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents GRP_PARAMS As GroupBox
+    Friend WithEvents Label6 As Label
+    Friend WithEvents CMB_PARAM As ComboBox
 End Class
