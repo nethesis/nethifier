@@ -206,9 +206,6 @@ Friend Class Config
                         P_POS = True
                         Me.POPUP_POS = CInt(Val)
                         X += 1
-                    ElseIf Key.StartsWith("=") Then
-                        Me.AUTO_LOGIN = (Val = "1")
-                        X += 1
                     ElseIf Key.StartsWith("LANGUAGE=") Then
                         Me.LANGUAGE = Val
                         X += 1

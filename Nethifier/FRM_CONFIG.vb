@@ -200,7 +200,6 @@ Friend Class FRM_CONFIG
                         EXP = .CloseTimeOut
                         HEIGHT = .Height
                         WIDTH = .Width
-                        UNIQUEID = .UNIQUEID
 
                         'Debug
                         If NethDebug.IsActive AndAlso NethDebug.USE_NOTIFICATION_TIMEOUT Then
@@ -227,11 +226,12 @@ Friend Class FRM_CONFIG
                                     CALLER_NUMBER = CALL_coll.Item("callerNum")
                                     CALLER_NAME = CALL_coll.Item("callerName")
                                     CALLED = CALL_coll.Item("dialExten")
+                                    UNIQUEID = CALL_coll.Item("uniqueid")
                                     If (CHK_PARAM.Checked And CMB_PARAM.Text = "ALLO SQUILLO") Then
-                                        Dim P_URL1 As String = Replace(ParamURLCTI, "$CALLER_NUMBER", CALLER_NUMBER)
-                                        Dim P_URL2 As String = Replace(P_URL1, "$CALLER_NAME", CALLER_NAME)
-                                        Dim P_URL3 As String = Replace(P_URL2, "$CALLED", CALLED)
-                                        ParamUrl(Replace(P_URL3, "$UNIQUEID", UNIQUEID))
+                                        Dim P_URL1 As String = Replace(ParamURLCTI, "$CALLER_NUMBER", HttpUtility.UrlEncode(CALLER_NUMBER))
+                                        Dim P_URL2 As String = Replace(P_URL1, "$CALLER_NAME", HttpUtility.UrlEncode(CALLER_NAME))
+                                        Dim P_URL3 As String = Replace(P_URL2, "$CALLED", HttpUtility.UrlEncode(CALLED))
+                                        ParamUrl(Replace(P_URL3, "$UNIQUEID", HttpUtility.UrlEncode(UNIQUEID)))
                                     End If
                                     _Client.SendBytes("{""error"":{""id"":""" & ID & """,""message"":""still active""}}")
                                 End If
@@ -2229,9 +2229,9 @@ Friend Class FRM_CONFIG
     Private Sub ParamUrl(URL As String)
         If _Browsers.Count > 0 Then
             If _Browsers.ContainsKey("chrome.exe") Then
-                System.Diagnostics.Process.Start("chrome.exe", Server.UrlEncode(URL))
+                System.Diagnostics.Process.Start("chrome.exe", URL)
             ElseIf _Browsers.ContainsKey("firefox.exe") Then
-                System.Diagnostics.Process.Start("firefox.exe", Server.UrlEncode(URL))
+                System.Diagnostics.Process.Start("firefox.exe", URL)
             End If
         End If
     End Sub

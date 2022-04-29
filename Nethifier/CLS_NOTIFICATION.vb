@@ -46,24 +46,7 @@ Public Class Notification
             _Action = value
         End Set
     End Property
-    Private _CALLED As String
-    Property CALLED As String
-        Get
-            Return _CALLED
-        End Get
-        Set(value As String)
-            _CALLED = value
-        End Set
-    End Property
-    Private _UNIQUEID As String
-    Property UNIQUEID As String
-        Get
-            Return _UNIQUEID
-        End Get
-        Set(value As String)
-            _UNIQUEID = value
-        End Set
-    End Property
+
     Private _CloseTimeOut As Integer
     Property CloseTimeOut As Integer
         Get
