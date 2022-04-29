@@ -9,7 +9,6 @@ Public Class FRM_NOTIFICATIONS
     Private TimerCollection As Hashtable = New Hashtable
 
     Private _CLIENT As TCP_CLIENT
-    Private _CONFIG As Config
 
     Friend Property TCPClient As TCP_CLIENT
         Get
@@ -29,7 +28,15 @@ Public Class FRM_NOTIFICATIONS
             _UserLogin = value
         End Set
     End Property
-
+    Private _CONFIG As Config
+    Friend Property CONFIG As Config
+        Get
+            Return _CONFIG
+        End Get
+        Set(value As Config)
+            _CONFIG = value
+        End Set
+    End Property
     Private Sub WEB_BROWSER_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
         'Dim TimeOut As String = DOCUMENT.GetElementById("wait").
 
@@ -85,6 +92,9 @@ Public Class FRM_NOTIFICATIONS
             'Cosa bisogna fare???
         End If
         Me.Location = New Point(Screen.PrimaryScreen.WorkingArea.Width - Width, Screen.PrimaryScreen.WorkingArea.Height - ((H + 50) + 0)) '+ (2 * WEB_CONTAINER.Controls.Count)
+        If _CONFIG.POPUP_POS = 1 Then Location = New Point(0, 0)
+        If _CONFIG.POPUP_POS = 2 Then Location = New Point(Screen.PrimaryScreen.WorkingArea.Width - Width, 0)
+        If _CONFIG.POPUP_POS = 4 Then Location = New Point(0, Screen.PrimaryScreen.WorkingArea.Height - ((H + 50) + 0))
         Me.Height = (H + 50)
 
         If Not Me.Visible Then
@@ -167,7 +177,7 @@ Public Class FRM_NOTIFICATIONS
     End Sub
 
     Private Sub FRM_BALLOON_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'WEB_BROWSER.
+        'WEB_BROWSER.        
     End Sub
 
     'Private _Notifications As Collection = New Collection
@@ -362,9 +372,9 @@ Public Class FRM_NOTIFICATIONS
 
 
     '2017-12-04
-    Private WaveReader As NAudio.Wave.WaveFileReader = Nothing
-    Private Output As NAudio.Wave.DirectSoundOut = Nothing
-    Private WithEvents Wave As NAudio.Wave.WaveOut
+    Private WaveReader As WaveFileReader = Nothing
+    Private Output As DirectSoundOut = Nothing
+    Private WithEvents Wave As WaveOut
     Private WaveFile As String = "" '"C:\Projects\Source\Workspaces\Neth-Dev\Nethifier\bin\Debug\alarm.wav"
 
     'Public Sub New()
@@ -396,9 +406,9 @@ Public Class FRM_NOTIFICATIONS
 
         StopRinging()
 
-        Wave = New NAudio.Wave.WaveOut
+        Wave = New WaveOut
         Wave.DeviceNumber = 0
-        WaveReader = New NAudio.Wave.WaveFileReader(WaveFile)
+        WaveReader = New WaveFileReader(WaveFile)
         Wave.Init(WaveReader)
         Wave.Play()
     End Sub

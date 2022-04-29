@@ -15,6 +15,7 @@ Imports Newtonsoft.Json
 Imports IWshRuntimeLibrary
 Imports Nethifier.Helper
 Imports NAudio.Wave
+Imports System.Collections.Specialized
 
 Friend Class FRM_CONFIG
 
@@ -65,6 +66,11 @@ Friend Class FRM_CONFIG
     End Enum
 
     Private Token As String = ""
+    Private ParamURLCTI As String = ""
+    Private CALLER_NUMBER As String = ""
+    Private CALLER_NAME As String = ""
+    Private UNIQUEID As String = ""
+    Private CALLED As String = ""
 
     Private Function BytesToString(ByVal data() As Byte) As String
         Dim enc As New System.Text.UTF8Encoding()
@@ -170,6 +176,7 @@ Friend Class FRM_CONFIG
             If Message.EndsWith(vbLf) Then
                 Message = Message.Substring(0, Message.Length - vbLf.Length)
             End If
+
             If Message.ToLower.StartsWith("{""notification"":") Then
                 'MessagePart = Split(Message.Substring("notify:".Length), "#")
 
@@ -193,6 +200,7 @@ Friend Class FRM_CONFIG
                         EXP = .CloseTimeOut
                         HEIGHT = .Height
                         WIDTH = .Width
+                        UNIQUEID = .UNIQUEID
 
                         'Debug
                         If NethDebug.IsActive AndAlso NethDebug.USE_NOTIFICATION_TIMEOUT Then
@@ -214,9 +222,16 @@ Friend Class FRM_CONFIG
                                     'NOTIFY.Icon = GetIcon("chat")
                                     NOTIFY.Icon = Nethifier.My.Resources.Resources.chat
                                     StartRinging()
-                                    'PARAMURL ALLO SQUILLO
-                                    If CMB_PARAM.Text = "ALLO SQUILLO" Then
-                                        ParamUrl("https://www.nethesis.it")
+                                    'PARAMURL WHEN RINGS
+                                    Dim CALL_coll As NameValueCollection = HttpUtility.ParseQueryString(URL.Substring(URL.IndexOf("?")))
+                                    CALLER_NUMBER = CALL_coll.Item("callerNum")
+                                    CALLER_NAME = CALL_coll.Item("callerName")
+                                    CALLED = CALL_coll.Item("dialExten")
+                                    If (CHK_PARAM.Checked And CMB_PARAM.Text = "ALLO SQUILLO") Then
+                                        Dim P_URL1 As String = Replace(ParamURLCTI, "$CALLER_NUMBER", CALLER_NUMBER)
+                                        Dim P_URL2 As String = Replace(P_URL1, "$CALLER_NAME", CALLER_NAME)
+                                        Dim P_URL3 As String = Replace(P_URL2, "$CALLED", CALLED)
+                                        ParamUrl(Replace(P_URL3, "$UNIQUEID", UNIQUEID))
                                     End If
                                     _Client.SendBytes("{""error"":{""id"":""" & ID & """,""message"":""still active""}}")
                                 End If
@@ -257,174 +272,177 @@ Friend Class FRM_CONFIG
             ElseIf Message.ToLower.StartsWith("{""extenconnected"":") Then
 
                 StopRinging()
-                'PARAMURL ALLA RISPOSTA
-                If CMB_PARAM.Text = "ALLA RISPOSTA" Then
-                    ParamUrl("https://www.nethesis.it")
+                'PARAMURL WHEN ANSWERED
+                If (CHK_PARAM.Checked And CMB_PARAM.Text = "ALLA RISPOSTA") Then
+                    Dim P_URL1 As String = Replace(ParamURLCTI, "$CALLER_NUMBER", CALLER_NUMBER)
+                    Dim P_URL2 As String = Replace(P_URL1, "$CALLER_NAME", CALLER_NAME)
+                    Dim P_URL3 As String = Replace(P_URL2, "$CALLED", CALLED)
+                    ParamUrl(Replace(P_URL3, "$UNIQUEID", UNIQUEID))
                 End If
                 LED("busy")
 
             ElseIf Message.ToLower.StartsWith("{""ping"":""active""}") Then
 
-                '
+                    '
 
-            ElseIf Message.ToLower.StartsWith("{""action"":""sendurl""") Then
-                '   Messaggio ricevuto da Nethifier per l'esecuzione di una chiamata
-                '{
-                '  “action”: “sendurl”,
-                '  “url”: “http://USER:PASSWORD@IP/servlet?number=NUMBER&outgoing_uri=INT@REMOTEHOST”
-                '}
-                LED("busy")
-                Try
-                    Dim URL As String = ""
-                    Dim WIDTH As Integer = 0
-                    Dim HEIGHT As Integer = 0
-                    Dim EXP As Integer = 0
-                    Dim ID As String = ""
-                    Dim ACTION As String = ""
-                    Dim UserName As String
-                    Dim Password As String
-                    Dim UserPwd As String
-                    Dim SubUrl As String
-                    Dim SubLen As Int32
-
-                    Dim Request As CLS_SendUrl = New CLS_SendUrl
-
-                    JsonConvert.PopulateObject(Message, Request)
-                    'Request = JsonConvert.DeserializeObject(Message)
-
-                    With Request
-                        URL = Request.URL
-                        ACTION = Request.Action
-                    End With
-
-                    SubLen = Convert.ToInt32(URL.StartsWith("http://")) * 7 + Convert.ToInt32(URL.StartsWith("https://")) * 8
-                    SubUrl = URL.Substring(SubLen, URL.LastIndexOf("/") - SubLen)
-
-                    UserPwd = SubUrl.Substring(0, SubUrl.LastIndexOf("@"))
-                    UserName = UserPwd.Substring(0, UserPwd.IndexOf(":"))
-                    Password = UserPwd.Substring(UserPwd.IndexOf(":") + 1)
-
-                    Mylog("action:sendurl", URL.Replace(Password, "****").ToString())
-
-                    Dim proc As New ProcessStartInfo
-                    With proc
-                        .UseShellExecute = True
-                        .WorkingDirectory = Environment.CurrentDirectory
-                        .FileName = "NethDialer.exe"
-                        .Arguments = "-cloud2call=" & URL
-                        '.Verb = "runas"
-                    End With
-
+                ElseIf Message.ToLower.StartsWith("{""action"":""sendurl""") Then
+                    '   Messaggio ricevuto da Nethifier per l'esecuzione di una chiamata
+                    '{
+                    '  “action”: “sendurl”,
+                    '  “url”: “http://USER:PASSWORD@IP/servlet?number=NUMBER&outgoing_uri=INT@REMOTEHOST”
+                    '}
+                    LED("busy")
                     Try
-                        Process.Start(proc)
-                    Catch ex As Exception
-                        ' The user refused the elevation. 
-                        ' Do nothing and return directly ... 
-                        'MessageBox.Show(ex.Message)
-                    Finally
+                        Dim URL As String = ""
+                        Dim WIDTH As Integer = 0
+                        Dim HEIGHT As Integer = 0
+                        Dim EXP As Integer = 0
+                        Dim ID As String = ""
+                        Dim ACTION As String = ""
+                        Dim UserName As String
+                        Dim Password As String
+                        Dim UserPwd As String
+                        Dim SubUrl As String
+                        Dim SubLen As Int32
+
+                        Dim Request As CLS_SendUrl = New CLS_SendUrl
+
+                        JsonConvert.PopulateObject(Message, Request)
+                        'Request = JsonConvert.DeserializeObject(Message)
+
+                        With Request
+                            URL = Request.URL
+                            ACTION = Request.Action
+                        End With
+
+                        SubLen = Convert.ToInt32(URL.StartsWith("http://")) * 7 + Convert.ToInt32(URL.StartsWith("https://")) * 8
+                        SubUrl = URL.Substring(SubLen, URL.LastIndexOf("/") - SubLen)
+
+                        UserPwd = SubUrl.Substring(0, SubUrl.LastIndexOf("@"))
+                        UserName = UserPwd.Substring(0, UserPwd.IndexOf(":"))
+                        Password = UserPwd.Substring(UserPwd.IndexOf(":") + 1)
+
+                        Mylog("action:sendurl", URL.Replace(Password, "****").ToString())
+
+                        Dim proc As New ProcessStartInfo
+                        With proc
+                            .UseShellExecute = True
+                            .WorkingDirectory = Environment.CurrentDirectory
+                            .FileName = "NethDialer.exe"
+                            .Arguments = "-cloud2call=" & URL
+                            '.Verb = "runas"
+                        End With
+
+                        Try
+                            Process.Start(proc)
+                        Catch ex As Exception
+                            ' The user refused the elevation. 
+                            ' Do nothing and return directly ... 
+                            'MessageBox.Show(ex.Message)
+                        Finally
+                            'CALL_TIMER.Enabled = True
+                        End Try
                         'CALL_TIMER.Enabled = True
-                    End Try
-                    'CALL_TIMER.Enabled = True
 
-                    'Dim webClient As New System.Net.WebClient
-                    ''webClient.Headers.Clear()
-                    ''webClient.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
-                    'WebClient.Credentials = New NetworkCredential(UserName, Password)
-                    ''webClient.Headers.Add("Accept-Encoding", "")
-                    ''WebClient.Headers.Add("User-Agent", Guid.NewGuid().ToString)
-                    ''WebClient.Encoding = System.Text.Encoding.UTF8
-                    'If Not (webClient.IsBusy) Then
-                    'Dim result As String
-                    'Try
-                    'result = WebClient.DownloadString(URL)
-                    'Mylog("ResultCall", result.ToString())
+                        'Dim webClient As New System.Net.WebClient
+                        ''webClient.Headers.Clear()
+                        ''webClient.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
+                        'WebClient.Credentials = New NetworkCredential(UserName, Password)
+                        ''webClient.Headers.Add("Accept-Encoding", "")
+                        ''WebClient.Headers.Add("User-Agent", Guid.NewGuid().ToString)
+                        ''WebClient.Encoding = System.Text.Encoding.UTF8
+                        'If Not (webClient.IsBusy) Then
+                        'Dim result As String
+                        'Try
+                        'result = WebClient.DownloadString(URL)
+                        'Mylog("ResultCall", result.ToString())
 
-                    'Catch e As WebException
-                    'Mylog("ResultCall", e.Message.ToString())
-                    'MsgBox(e.Message.ToString(), 0, "ResultCall")
-                    'End Try
-                    '   'webClient.Dispose()
-                    'Else
-                    'Mylog("ResultCall", "Webclient Busy")
-                    'End If
+                        'Catch e As WebException
+                        'Mylog("ResultCall", e.Message.ToString())
+                        'MsgBox(e.Message.ToString(), 0, "ResultCall")
+                        'End Try
+                        '   'webClient.Dispose()
+                        'Else
+                        'Mylog("ResultCall", "Webclient Busy")
+                        'End If
 
-                Catch ex As Exception
-                    ExceptionManager.Write(ex)
-                    Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
-                    If IO.File.Exists(DebugPathE) Then
-                        My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- UpdateUIEx: " & ex.Message.Replace(Environment.NewLine, " ") & Environment.NewLine, True)
-                    End If
-                End Try
-
-            ElseIf Message.ToLower.StartsWith("{""action"":""debug""") Then
-                Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
-                My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Enabled Debug " & Environment.NewLine, True)
-
-            ElseIf Message.ToLower.StartsWith("{""action"":""debug-off""") Then
-                Dim DebugPathF As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
-                If IO.File.Exists(DebugPathF) Then
-                    My.Computer.FileSystem.WriteAllText(DebugPathF, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Disabled Debug " & Environment.NewLine, True)
-                    Dim DebugPathG As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug" & Format(Date.Now(), "yyyyMMddHHmmss") & ".log")
-                    Rename(DebugPathF, DebugPathG)
-                End If
-
-            ElseIf Message.ToLower.StartsWith("{""action"":""reset"",") Then
-                Dim Action As CLS_ACTIONS = New CLS_ACTIONS
-                Dim Comm As New Commands
-
-                JsonConvert.PopulateObject(Message, Action)
-                JsonConvert.PopulateObject(Message.ToLower.Replace("{""action"":""reset"",""type"":""commands"",", "{"), Comm)
-
-                If Action.Action = "reset" Then
-                    Do While True
-                        Dim E As Boolean = True
-                        For Each Com As Command In Config.Commands.Values
-                            Config.Commands.Remove(Com.Command)
-                            E = False
-                            Exit For
-                        Next
-
-                        If E Then
-                            Config.Save()
-                            Exit Do
+                    Catch ex As Exception
+                        ExceptionManager.Write(ex)
+                        Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                        If IO.File.Exists(DebugPathE) Then
+                            My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- UpdateUIEx: " & ex.Message.Replace(Environment.NewLine, " ") & Environment.NewLine, True)
                         End If
-                    Loop
+                    End Try
+
+                ElseIf Message.ToLower.StartsWith("{""action"":""debug""") Then
+                    Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                    My.Computer.FileSystem.WriteAllText(DebugPathE, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Enabled Debug " & Environment.NewLine, True)
+
+                ElseIf Message.ToLower.StartsWith("{""action"":""debug-off""") Then
+                    Dim DebugPathF As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
+                    If IO.File.Exists(DebugPathF) Then
+                        My.Computer.FileSystem.WriteAllText(DebugPathF, Format(Date.Now(), "yyyy/MM/dd HH:mm:ss") & "- Disabled Debug " & Environment.NewLine, True)
+                        Dim DebugPathG As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug" & Format(Date.Now(), "yyyyMMddHHmmss") & ".log")
+                        Rename(DebugPathF, DebugPathG)
+                    End If
+
+                ElseIf Message.ToLower.StartsWith("{""action"":""reset"",") Then
+                    Dim Action As CLS_ACTIONS = New CLS_ACTIONS
+                    Dim Comm As New Commands
+
+                    JsonConvert.PopulateObject(Message, Action)
+                    JsonConvert.PopulateObject(Message.ToLower.Replace("{""action"":""reset"",""type"":""commands"",", "{"), Comm)
+
+                    If Action.Action = "reset" Then
+                        Do While True
+                            Dim E As Boolean = True
+                            For Each Com As Command In Config.Commands.Values
+                                Config.Commands.Remove(Com.Command)
+                                E = False
+                                Exit For
+                            Next
+
+                            If E Then
+                                Config.Save()
+                                Exit Do
+                            End If
+                        Loop
+
+                        ReloadCommands(Comm)
+                    End If
+
+                ElseIf Message.ToLower.StartsWith("{""commands"":") Then
+                    Dim St As String() = Split(Message, vbLf)
+                    Dim Comm As Commands = New Commands ' = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Commands)(Message)
+                    JsonConvert.PopulateObject(St(0), Comm)
 
                     ReloadCommands(Comm)
-                End If
 
-            ElseIf Message.ToLower.StartsWith("{""commands"":") Then
-                Dim St As String() = Split(Message, vbLf)
-                Dim Comm As Commands = New Commands ' = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Commands)(Message)
-                JsonConvert.PopulateObject(St(0), Comm)
+                    If St.Length > 1 Then
+                        Dim Colo As String = St(1).ToLower.Trim
 
-                ReloadCommands(Comm)
-
-                If St.Length > 1 Then
-                    Dim Colo As String = St(1).ToLower.Trim
-
-                    If Colo.StartsWith("{""setcolorled"":") Then
-                        LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
+                        If Colo.StartsWith("{""setcolorled"":") Then
+                            LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
+                        End If
                     End If
-                End If
 
-            ElseIf Message.ToLower.StartsWith("{""setcolorled"":") Then
-                Dim M As String = Message
+                ElseIf Message.ToLower.StartsWith("{""setcolorled"":") Then
+                    Dim M As String = Message
 
-                If M.IndexOf(vbLf) > 0 Then
+                    If M.IndexOf(vbLf) > 0 Then
 
 
-                    Dim Colors As String() = Split(M, vbLf)
-                    M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
-                    LED(M.Replace(":", "_"))
+                        Dim Colors As String() = Split(M, vbLf)
+                        M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
+                        LED(M.Replace(":", "_"))
+                    Else
+                        LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
+                    End If
+
+                ElseIf Message.StartsWith("{""ring"":") Then
+
                 Else
-                    LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
-                End If
-
-            ElseIf Message.StartsWith("{""ring"":") Then
-
-            Else
-                If Message = Msg.GetMessage("STAT_002") Then
+                    If Message = Msg.GetMessage("STAT_002") Then
                     Notifications.ClearNotifications()
                     Disconnect()
                     EnableProperties(True)
@@ -501,6 +519,8 @@ Friend Class FRM_CONFIG
                     End Try
                     Mylog("UpdateUI", "HeadPhone ON")
 
+                    Dim jsonresult = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(CallAPI("GET", "/user/paramurl"))
+                    ParamURLCTI = CType(jsonresult("url"), String)
                 ElseIf Message.Trim.ToLower = "authe_err" Then
                     Disconnect()
                     _Client.Disconnect()
@@ -752,7 +772,22 @@ Friend Class FRM_CONFIG
 
             TXT_AUTHEN.Text = .AUTH_ADDRESS
             AUTO_LOGIN.Checked = .AUTO_LOGIN
-
+            CHK_PARAM.Checked = .PARAM_CHECK
+            CMB_PARAM.Text = .PARAM_MODE
+            Select Case .POPUP_POS
+                Case 1
+                    CHK_ASX.Checked = True
+                    CHK_ASX.Checked = True
+                Case 2
+                    CHK_BSX.Checked = True
+                    CHK_BSX.Checked = True
+                Case 4
+                    CHK_ADX.Checked = True
+                    CHK_ADX.Checked = True
+                Case 8
+                    CHK_BDX.Checked = True
+                    CHK_BDX.Checked = True
+            End Select
             CMB_MODE.SelectedIndex = CMB_MODE.FindString(.AUTH_MODE)
 
             For i = 0 To HotKeys.Length - 1
@@ -1445,7 +1480,9 @@ Friend Class FRM_CONFIG
                 .NOTIFY_TIMEOUT = CInt(NUM_NOTIFICA.Value)
                 .AUTH_ADDRESS = TXT_AUTHEN.Text
                 .AUTO_LOGIN = AUTO_LOGIN.Checked
-
+                .PARAM_CHECK = CHK_PARAM.Checked
+                .PARAM_MODE = CMB_PARAM.Text
+                .POPUP_POS = Convert.ToInt32(CHK_ASX.Checked) + Convert.ToInt32(CHK_BSX.Checked) * 2 + Convert.ToInt32(CHK_ADX.Checked) * 4 + Convert.ToInt32(CHK_BDX.Checked) * 8
                 If CHK_SUONERIA.Checked Then
                     If Not IO.File.Exists(TXT_SOUND.Text) Then
                         Dim RingerPath As String = IO.Path.Combine(Application.StartupPath, "ringer.mp3")
@@ -2192,12 +2229,37 @@ Friend Class FRM_CONFIG
     Private Sub ParamUrl(URL As String)
         If _Browsers.Count > 0 Then
             If _Browsers.ContainsKey("chrome.exe") Then
-                System.Diagnostics.Process.Start("chrome.exe", URL)
+                System.Diagnostics.Process.Start("chrome.exe", Server.UrlEncode(URL))
             ElseIf _Browsers.ContainsKey("firefox.exe") Then
-                System.Diagnostics.Process.Start("firefox.exe", URL)
+                System.Diagnostics.Process.Start("firefox.exe", Server.UrlEncode(URL))
             End If
         End If
     End Sub
+
+    Public Function CallAPI(Method As String, API As String) As String
+        Dim responseFromServer As String=""
+        Try
+            Dim s As WebRequest
+            Dim enc As UTF8Encoding
+            Dim Url As New Uri("https://" + TXT_SERVER.Text + "/webrest/" + API)
+
+
+            s = WebRequest.Create(Url)
+            enc = New System.Text.UTF8Encoding()
+
+            s.Headers.Add("Authorization", Config.USERNAME.ToLower & ":" & Me.Token.ToLower)
+            s.Method = Method
+            s.ContentType = "application/x-www-form-urlencoded"
+            Dim response As WebResponse = s.GetResponse()
+            Using dataStream As Stream = response.GetResponseStream()
+                Dim reader As New StreamReader(dataStream)
+                responseFromServer = reader.ReadToEnd()
+            End Using
+        Catch ex As Exception
+            ExceptionManager.Write(ex)
+        End Try
+        Return (responseFromServer)
+    End Function
 
     Private Sub Wave_PlaybackStopped(sender As Object, e As StoppedEventArgs) Handles Wave.PlaybackStopped
 
@@ -2208,18 +2270,21 @@ Friend Class FRM_CONFIG
     End Sub
 
     Private Sub LED(command As String)
-        Dim Path As String = Application.StartupPath
-        If My.Application.CommandLineArgs.Contains("-e") Then
-            Path = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Application.ProductName)
-        End If
-        Path = IO.Path.Combine(Path, "led_" & command)
+        Try
+            Dim Path As String = Application.StartupPath
+            If My.Application.CommandLineArgs.Contains("-e") Then
+                Path = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Application.ProductName)
+            End If
+            Path = IO.Path.Combine(Path, "led_" & command)
 
-        If IO.File.Exists(Path) Then
-            IO.File.Delete(Path)
-        End If
-        Using Stream As StreamWriter = New StreamWriter(Path, True)
-            'Just create text file / read
-        End Using
+            If IO.File.Exists(Path) Then
+                IO.File.Delete(Path)
+            End If
+            Using Stream As StreamWriter = New StreamWriter(Path, True)
+                'Just create text file / read
+            End Using
+        Catch
+        End Try
     End Sub
 
     Private Sub BUT_SFOGLIA_Click(sender As Object, e As EventArgs) Handles BUT_SFOGLIA.Click
@@ -2282,8 +2347,8 @@ Friend Class FRM_CONFIG
         End If
     End Sub
 
-    Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
-        GRP_PARAMS.Enabled = CheckBox1.Checked
+    Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CHK_PARAM.CheckedChanged
+        GRP_PARAMS.Enabled = CHK_PARAM.Checked
 
         If CMB_PARAM.Text = "" Then
             CMB_PARAM.SelectedValue = "ALLA RISPOSTA"
@@ -2292,10 +2357,30 @@ Friend Class FRM_CONFIG
         Refresh()
 
     End Sub
-
-    Private Sub GroupBox2_Enter(sender As Object, e As EventArgs) Handles GRP_PARAMS.Enter
-
+    Private Sub CHK_ASX_CheckedChanged(sender As Object, e As EventArgs) Handles CHK_ASX.CheckedChanged
+        CHK_BSX.Checked = False
+        CHK_ADX.Checked = False
+        CHK_BDX.Checked = False
     End Sub
+    Private Sub CHK_BSX_CheckedChanged(sender As Object, e As EventArgs) Handles CHK_BSX.CheckedChanged
+        CHK_ASX.Checked = False
+        CHK_ADX.Checked = False
+        CHK_BDX.Checked = False
+    End Sub
+
+
+    Private Sub CHK_ADX_CheckedChanged(sender As Object, e As EventArgs) Handles CHK_ADX.CheckedChanged
+        CHK_BSX.Checked = False
+        CHK_ASX.Checked = False
+        CHK_BDX.Checked = False
+    End Sub
+    Private Sub CHK_BDX_CheckedChanged(sender As Object, e As EventArgs) Handles CHK_BDX.CheckedChanged
+        CHK_ASX.Checked = False
+        CHK_BSX.Checked = False
+        CHK_ADX.Checked = False
+    End Sub
+
+
 
     'FOR DIALER
 End Class

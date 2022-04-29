@@ -75,6 +75,11 @@ Partial Class FRM_CONFIG
         Me.TXT_SPEEDDIAL_HOTKEY = New System.Windows.Forms.TextBox()
         Me.CMB_SPEEDDIAL_HOTKEY = New System.Windows.Forms.ComboBox()
         Me.TAB_006 = New System.Windows.Forms.TabPage()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.CHK_ADX = New System.Windows.Forms.CheckBox()
+        Me.CHK_BDX = New System.Windows.Forms.CheckBox()
+        Me.CHK_BSX = New System.Windows.Forms.CheckBox()
+        Me.CHK_ASX = New System.Windows.Forms.CheckBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.CHK_ANSWER = New System.Windows.Forms.CheckBox()
         Me.Label5 = New System.Windows.Forms.Label()
@@ -89,6 +94,11 @@ Partial Class FRM_CONFIG
         Me.Label4 = New System.Windows.Forms.Label()
         Me.TXT_SOUND = New System.Windows.Forms.TextBox()
         Me.BUT_SFOGLIA = New System.Windows.Forms.Button()
+        Me.TAB_007 = New System.Windows.Forms.TabPage()
+        Me.CHK_PARAM = New System.Windows.Forms.CheckBox()
+        Me.GRP_PARAMS = New System.Windows.Forms.GroupBox()
+        Me.CMB_PARAM = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.BUT_SAVE = New System.Windows.Forms.Button()
         Me.FILE_DLG = New System.Windows.Forms.OpenFileDialog()
         Me.TMR_CONNECTION = New System.Windows.Forms.Timer(Me.components)
@@ -97,11 +107,6 @@ Partial Class FRM_CONFIG
         Me.TMR_ELAPSE = New System.Windows.Forms.Timer(Me.components)
         Me.TMR_ICONS = New System.Windows.Forms.Timer(Me.components)
         Me.TMR_DEVICE = New System.Windows.Forms.Timer(Me.components)
-        Me.TAB_007 = New System.Windows.Forms.TabPage()
-        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
-        Me.GRP_PARAMS = New System.Windows.Forms.GroupBox()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.CMB_PARAM = New System.Windows.Forms.ComboBox()
         Me.StatusStrip1.SuspendLayout()
         Me.gbIpAddress.SuspendLayout()
         Me.gbServerPort.SuspendLayout()
@@ -115,6 +120,7 @@ Partial Class FRM_CONFIG
         Me.TAB_004.SuspendLayout()
         Me.TAB_005.SuspendLayout()
         Me.TAB_006.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.GRP_SUONERIA.SuspendLayout()
         Me.TAB_007.SuspendLayout()
@@ -579,6 +585,7 @@ Partial Class FRM_CONFIG
         '
         'TAB_006
         '
+        Me.TAB_006.Controls.Add(Me.GroupBox2)
         Me.TAB_006.Controls.Add(Me.GroupBox1)
         Me.TAB_006.Controls.Add(Me.CHK_SUONERIA)
         Me.TAB_006.Controls.Add(Me.GRP_SUONERIA)
@@ -589,6 +596,71 @@ Partial Class FRM_CONFIG
         Me.TAB_006.TabIndex = 5
         Me.TAB_006.Text = "Ringtone"
         Me.TAB_006.UseVisualStyleBackColor = True
+        '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.CHK_ADX)
+        Me.GroupBox2.Controls.Add(Me.CHK_BDX)
+        Me.GroupBox2.Controls.Add(Me.CHK_BSX)
+        Me.GroupBox2.Controls.Add(Me.CHK_ASX)
+        Me.GroupBox2.Location = New System.Drawing.Point(6, 189)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(392, 66)
+        Me.GroupBox2.TabIndex = 12
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Posizione PopUP chiamata"
+        '
+        'CHK_ADX
+        '
+        Me.CHK_ADX.AutoSize = True
+        Me.CHK_ADX.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.CHK_ADX.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.CHK_ADX.Location = New System.Drawing.Point(287, 19)
+        Me.CHK_ADX.Name = "CHK_ADX"
+        Me.CHK_ADX.Size = New System.Drawing.Size(96, 17)
+        Me.CHK_ADX.TabIndex = 10
+        Me.CHK_ADX.Text = "In alto a destra"
+        Me.CHK_ADX.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.TIP.SetToolTip(Me.CHK_ADX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.CHK_ADX.UseVisualStyleBackColor = True
+        '
+        'CHK_BDX
+        '
+        Me.CHK_BDX.AutoSize = True
+        Me.CHK_BDX.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.CHK_BDX.Checked = True
+        Me.CHK_BDX.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CHK_BDX.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.CHK_BDX.Location = New System.Drawing.Point(276, 42)
+        Me.CHK_BDX.Name = "CHK_BDX"
+        Me.CHK_BDX.Size = New System.Drawing.Size(107, 17)
+        Me.CHK_BDX.TabIndex = 9
+        Me.CHK_BDX.Text = "In basso a destra"
+        Me.CHK_BDX.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.TIP.SetToolTip(Me.CHK_BDX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.CHK_BDX.UseVisualStyleBackColor = True
+        '
+        'CHK_BSX
+        '
+        Me.CHK_BSX.AutoSize = True
+        Me.CHK_BSX.Location = New System.Drawing.Point(6, 42)
+        Me.CHK_BSX.Name = "CHK_BSX"
+        Me.CHK_BSX.Size = New System.Drawing.Size(110, 17)
+        Me.CHK_BSX.TabIndex = 8
+        Me.CHK_BSX.Text = "In basso a sinistra"
+        Me.TIP.SetToolTip(Me.CHK_BSX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.CHK_BSX.UseVisualStyleBackColor = True
+        '
+        'CHK_ASX
+        '
+        Me.CHK_ASX.AutoSize = True
+        Me.CHK_ASX.Location = New System.Drawing.Point(6, 19)
+        Me.CHK_ASX.Name = "CHK_ASX"
+        Me.CHK_ASX.Size = New System.Drawing.Size(99, 17)
+        Me.CHK_ASX.TabIndex = 7
+        Me.CHK_ASX.Text = "In alto a sinistra"
+        Me.TIP.SetToolTip(Me.CHK_ASX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.CHK_ASX.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
@@ -735,6 +807,58 @@ Partial Class FRM_CONFIG
         Me.BUT_SFOGLIA.Text = "..."
         Me.BUT_SFOGLIA.UseVisualStyleBackColor = True
         '
+        'TAB_007
+        '
+        Me.TAB_007.Controls.Add(Me.CHK_PARAM)
+        Me.TAB_007.Controls.Add(Me.GRP_PARAMS)
+        Me.TAB_007.Location = New System.Drawing.Point(4, 22)
+        Me.TAB_007.Name = "TAB_007"
+        Me.TAB_007.Padding = New System.Windows.Forms.Padding(3)
+        Me.TAB_007.Size = New System.Drawing.Size(405, 265)
+        Me.TAB_007.TabIndex = 6
+        Me.TAB_007.Text = "ParamURL"
+        Me.TAB_007.UseVisualStyleBackColor = True
+        '
+        'CHK_PARAM
+        '
+        Me.CHK_PARAM.AutoSize = True
+        Me.CHK_PARAM.Location = New System.Drawing.Point(9, 3)
+        Me.CHK_PARAM.Name = "CHK_PARAM"
+        Me.CHK_PARAM.Size = New System.Drawing.Size(138, 17)
+        Me.CHK_PARAM.TabIndex = 10
+        Me.CHK_PARAM.Text = "Abilita URL Parametrico"
+        Me.CHK_PARAM.UseVisualStyleBackColor = True
+        '
+        'GRP_PARAMS
+        '
+        Me.GRP_PARAMS.Controls.Add(Me.CMB_PARAM)
+        Me.GRP_PARAMS.Controls.Add(Me.Label6)
+        Me.GRP_PARAMS.Enabled = False
+        Me.GRP_PARAMS.Location = New System.Drawing.Point(3, 3)
+        Me.GRP_PARAMS.Name = "GRP_PARAMS"
+        Me.GRP_PARAMS.Size = New System.Drawing.Size(392, 98)
+        Me.GRP_PARAMS.TabIndex = 9
+        Me.GRP_PARAMS.TabStop = False
+        '
+        'CMB_PARAM
+        '
+        Me.CMB_PARAM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CMB_PARAM.FormattingEnabled = True
+        Me.CMB_PARAM.Items.AddRange(New Object() {"ALLA RISPOSTA", "ALLO SQUILLO"})
+        Me.CMB_PARAM.Location = New System.Drawing.Point(54, 17)
+        Me.CMB_PARAM.Name = "CMB_PARAM"
+        Me.CMB_PARAM.Size = New System.Drawing.Size(332, 21)
+        Me.CMB_PARAM.TabIndex = 1
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(6, 25)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(31, 13)
+        Me.Label6.TabIndex = 1
+        Me.Label6.Text = "Mod."
+        '
         'BUT_SAVE
         '
         Me.BUT_SAVE.Location = New System.Drawing.Point(334, 297)
@@ -779,58 +903,6 @@ Partial Class FRM_CONFIG
         Me.TMR_DEVICE.Enabled = True
         Me.TMR_DEVICE.Interval = 1000
         '
-        'TAB_007
-        '
-        Me.TAB_007.Controls.Add(Me.CheckBox1)
-        Me.TAB_007.Controls.Add(Me.GRP_PARAMS)
-        Me.TAB_007.Location = New System.Drawing.Point(4, 22)
-        Me.TAB_007.Name = "TAB_007"
-        Me.TAB_007.Padding = New System.Windows.Forms.Padding(3)
-        Me.TAB_007.Size = New System.Drawing.Size(405, 265)
-        Me.TAB_007.TabIndex = 6
-        Me.TAB_007.Text = "ParamURL"
-        Me.TAB_007.UseVisualStyleBackColor = True
-        '
-        'CheckBox1
-        '
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Location = New System.Drawing.Point(9, 3)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(138, 17)
-        Me.CheckBox1.TabIndex = 10
-        Me.CheckBox1.Text = "Abilita URL Parametrico"
-        Me.CheckBox1.UseVisualStyleBackColor = True
-        '
-        'GRP_PARAMS
-        '
-        Me.GRP_PARAMS.Controls.Add(Me.CMB_PARAM)
-        Me.GRP_PARAMS.Controls.Add(Me.Label6)
-        Me.GRP_PARAMS.Enabled = False
-        Me.GRP_PARAMS.Location = New System.Drawing.Point(3, 3)
-        Me.GRP_PARAMS.Name = "GRP_PARAMS"
-        Me.GRP_PARAMS.Size = New System.Drawing.Size(392, 98)
-        Me.GRP_PARAMS.TabIndex = 9
-        Me.GRP_PARAMS.TabStop = False
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(6, 25)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(31, 13)
-        Me.Label6.TabIndex = 1
-        Me.Label6.Text = "Mod."
-        '
-        'CMB_PARAM
-        '
-        Me.CMB_PARAM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CMB_PARAM.FormattingEnabled = True
-        Me.CMB_PARAM.Items.AddRange(New Object() {"ALLA RISPOSTA", "ALLO SQUILLO"})
-        Me.CMB_PARAM.Location = New System.Drawing.Point(54, 17)
-        Me.CMB_PARAM.Name = "CMB_PARAM"
-        Me.CMB_PARAM.Size = New System.Drawing.Size(332, 21)
-        Me.CMB_PARAM.TabIndex = 1
-        '
         'FRM_CONFIG
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -869,6 +941,8 @@ Partial Class FRM_CONFIG
         Me.TAB_005.PerformLayout()
         Me.TAB_006.ResumeLayout(False)
         Me.TAB_006.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.GRP_SUONERIA.ResumeLayout(False)
@@ -955,8 +1029,13 @@ Partial Class FRM_CONFIG
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents CHK_ONEKEY As CheckBox
     Friend WithEvents TAB_007 As TabPage
-    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents CHK_PARAM As CheckBox
     Friend WithEvents GRP_PARAMS As GroupBox
     Friend WithEvents Label6 As Label
     Friend WithEvents CMB_PARAM As ComboBox
+    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents CHK_BSX As CheckBox
+    Friend WithEvents CHK_ASX As CheckBox
+    Friend WithEvents CHK_BDX As CheckBox
+    Friend WithEvents CHK_ADX As CheckBox
 End Class
