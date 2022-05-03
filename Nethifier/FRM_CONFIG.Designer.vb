@@ -638,7 +638,8 @@ Partial Class FRM_CONFIG
         Me.CHK_BDX.TabIndex = 9
         Me.CHK_BDX.Text = "In basso a destra"
         Me.CHK_BDX.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.TIP.SetToolTip(Me.CHK_BDX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.TIP.SetToolTip(Me.CHK_BDX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
+
         Me.CHK_BDX.UseVisualStyleBackColor = True
         '
         'CHK_BSX
