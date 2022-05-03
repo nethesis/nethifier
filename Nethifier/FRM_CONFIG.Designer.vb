@@ -717,7 +717,8 @@ Partial Class FRM_CONFIG
         Me.CHK_ONEKEY.Size = New System.Drawing.Size(308, 17)
         Me.CHK_ONEKEY.TabIndex = 6
         Me.CHK_ONEKEY.Text = "Usa un solo tasto per rispondere e per terminare la chiamata"
-        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo il check, la suoneria sarà esguita una volta sola all'arrivo della chia" &
+        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo la spunta, la suoneria sarà esguita una volta sola all'arrivo della chia" &
+
         "mata")
         Me.CHK_ONEKEY.UseVisualStyleBackColor = True
         '
