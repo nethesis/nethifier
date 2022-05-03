@@ -662,7 +662,8 @@ Partial Class FRM_CONFIG
         Me.CHK_ASX.Size = New System.Drawing.Size(99, 17)
         Me.CHK_ASX.TabIndex = 7
         Me.CHK_ASX.Text = "In alto a sinistra"
-        Me.TIP.SetToolTip(Me.CHK_ASX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.TIP.SetToolTip(Me.CHK_ASX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
+
         Me.CHK_ASX.UseVisualStyleBackColor = True
         '
         'GroupBox1
