@@ -45,8 +45,8 @@ Friend Class Config
                     P = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
                 End If
             Else
-                    'P = Application.StartupPath
-                    P = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
+                'P = Application.StartupPath
+                P = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.ProductName
             End If
 
             If Not IO.Directory.Exists(P) Then
@@ -69,6 +69,9 @@ Friend Class Config
     Public AUTH_ADDRESS As String
     Public NOTIFY_TIMEOUT As Int32
     Public AUTO_LOGIN As Boolean = True
+    Public PARAM_CHECK As Boolean = False
+    Public PARAM_MODE As String
+    Public POPUP_POS As Int32 = 0
 
     Public Commands As Hashtable = New Hashtable
     Public LANGUAGE As String = "default"
@@ -110,6 +113,9 @@ Friend Class Config
         "AUTH_ADDRESS=" & Me.AUTH_ADDRESS & vbCrLf &
         "NOTIFY_TIMEOUT=" & Me.NOTIFY_TIMEOUT & vbCrLf &
         "AUTO_LOGIN=" & CStr(IIf(Me.AUTO_LOGIN, "1", "0")) & vbCrLf &
+        "PARAM_CHECK=" & CStr(IIf(Me.PARAM_CHECK, "1", "0")) & vbCrLf &
+        "PARAM_MODE=" & Me.PARAM_MODE & vbCrLf &
+        "POPUP_POS=" & Me.POPUP_POS & vbCrLf &
         "LANGUAGE=" & Me.LANGUAGE & vbCrLf &
         "HOTKEY_MOD_SPEED_DIAL=" & Me.HOTKEY_MOD_SPEED_DIAL & vbCrLf &
         "HOTKEY_MOD_REDIAL=" & Me.HOTKEY_MOD_REDIAL & vbCrLf &
@@ -160,6 +166,7 @@ Friend Class Config
             Dim RD As Boolean
             Dim HKSD As Boolean
             Dim HKRD As Boolean
+            Dim P_POS As Boolean
 
             For I As Integer = 0 To Par.Length - 1
                 Key = Trim(Par(I)) '.ToUpper
@@ -188,6 +195,16 @@ Friend Class Config
                         End If
                     ElseIf Key.StartsWith("AUTO_LOGIN=") Then
                         Me.AUTO_LOGIN = (Val = "1")
+                        X += 1
+                    ElseIf Key.StartsWith("PARAM_CHECK=") Then
+                        Me.PARAM_CHECK = (Val = "1")
+                        X += 1
+                    ElseIf Key.StartsWith("PARAM_MODE=") Then
+                        Me.PARAM_MODE = Val
+                        X += 1
+                    ElseIf Key.StartsWith("POPUP_POS=") Then
+                        P_POS = True
+                        Me.POPUP_POS = CInt(Val)
                         X += 1
                     ElseIf Key.StartsWith("LANGUAGE=") Then
                         Me.LANGUAGE = Val
@@ -249,6 +266,10 @@ Friend Class Config
                 Me.MOD_SPEED_DIAL = 122 'F11
                 Me.HOTKEY_MOD_REDIAL = &H2 'CTRL
                 Me.HOTKEY_MOD_SPEED_DIAL = &H2 'CTRL
+            End If
+
+            If Not (P_POS) Then
+                Me.POPUP_POS = 8
             End If
 
             _IsSaved = (X = 8)
@@ -517,7 +538,7 @@ Friend Class Helper
 
         Try
             ' Open the access token of the current process with TOKEN_QUERY.
-            If (Not NativeMethods.OpenProcessToken(Process.GetCurrentProcess.Handle, _
+            If (Not NativeMethods.OpenProcessToken(Process.GetCurrentProcess.Handle,
                 NativeMethods.TOKEN_QUERY, hToken)) Then
                 Throw New Win32Exception
             End If
@@ -530,8 +551,8 @@ Friend Class Helper
             End If
 
             ' Retrieve token elevation information.
-            If (Not NativeMethods.GetTokenInformation(hToken, _
-                TOKEN_INFORMATION_CLASS.TokenElevation, _
+            If (Not NativeMethods.GetTokenInformation(hToken,
+                TOKEN_INFORMATION_CLASS.TokenElevation,
                 pTokenElevation, cbTokenElevation, cbTokenElevation)) Then
                 Throw New Win32Exception
             End If
@@ -630,18 +651,18 @@ Friend Class Enums
         TokenElevationTypeLimited
     End Enum
 
-    <StructLayout(LayoutKind.Sequential)> _
+    <StructLayout(LayoutKind.Sequential)>
     Friend Structure SID_AND_ATTRIBUTES
         Public Sid As IntPtr
         Public Attributes As UInteger
     End Structure
 
-    <StructLayout(LayoutKind.Sequential)> _
+    <StructLayout(LayoutKind.Sequential)>
     Friend Structure TOKEN_ELEVATION
         Public TokenIsElevated As Integer
     End Structure
 
-    <StructLayout(LayoutKind.Sequential)> _
+    <StructLayout(LayoutKind.Sequential)>
     Friend Structure TOKEN_MANDATORY_LABEL
         Public Label As SID_AND_ATTRIBUTES
     End Structure
@@ -659,7 +680,7 @@ Friend Class SafeTokenHandle
         MyBase.SetHandle(handle)
     End Sub
 
-    <DllImport("kernel32.dll", CharSet:=CharSet.Auto, SetLastError:=True)> _
+    <DllImport("kernel32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
     Friend Shared Function CloseHandle(ByVal handle As IntPtr) As Boolean
     End Function
 
@@ -685,9 +706,9 @@ Friend Class NativeMethods
     Public Const TOKEN_ADJUST_DEFAULT As UInt32 = &H80
     Public Const TOKEN_ADJUST_SESSIONID As UInt32 = &H100
     Public Const TOKEN_READ As UInt32 = (STANDARD_RIGHTS_READ Or TOKEN_QUERY)
-    Public Const TOKEN_ALL_ACCESS As UInt32 = (STANDARD_RIGHTS_REQUIRED Or _
-        TOKEN_ASSIGN_PRIMARY Or TOKEN_DUPLICATE Or TOKEN_IMPERSONATE Or _
-        TOKEN_QUERY Or TOKEN_QUERY_SOURCE Or TOKEN_ADJUST_PRIVILEGES Or _
+    Public Const TOKEN_ALL_ACCESS As UInt32 = (STANDARD_RIGHTS_REQUIRED Or
+        TOKEN_ASSIGN_PRIMARY Or TOKEN_DUPLICATE Or TOKEN_IMPERSONATE Or
+        TOKEN_QUERY Or TOKEN_QUERY_SOURCE Or TOKEN_ADJUST_PRIVILEGES Or
         TOKEN_ADJUST_GROUPS Or TOKEN_ADJUST_DEFAULT Or TOKEN_ADJUST_SESSIONID)
 
 
@@ -702,45 +723,45 @@ Friend Class NativeMethods
     Public Const SECURITY_MANDATORY_HIGH_RID As Integer = &H3000
     Public Const SECURITY_MANDATORY_SYSTEM_RID As Integer = &H4000
 
-    <DllImport("advapi32", CharSet:=CharSet.Auto, SetLastError:=True)> _
-    Public Shared Function OpenProcessToken( _
-        ByVal hProcess As IntPtr, _
-        ByVal desiredAccess As UInt32, _
+    <DllImport("advapi32", CharSet:=CharSet.Auto, SetLastError:=True)>
+    Public Shared Function OpenProcessToken(
+        ByVal hProcess As IntPtr,
+        ByVal desiredAccess As UInt32,
         <Out()> ByRef hToken As SafeTokenHandle) _
         As <MarshalAs(UnmanagedType.Bool)> Boolean
     End Function
 
-    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True)> _
-    Public Shared Function DuplicateToken( _
-        ByVal ExistingTokenHandle As SafeTokenHandle, _
-        ByVal ImpersonationLevel As SECURITY_IMPERSONATION_LEVEL, _
+    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
+    Public Shared Function DuplicateToken(
+        ByVal ExistingTokenHandle As SafeTokenHandle,
+        ByVal ImpersonationLevel As SECURITY_IMPERSONATION_LEVEL,
         <Out()> ByRef DuplicateTokenHandle As SafeTokenHandle) _
         As Boolean
     End Function
 
-    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True)> _
-    Public Shared Function GetTokenInformation( _
-        ByVal hToken As SafeTokenHandle, _
-        ByVal tokenInfoClass As TOKEN_INFORMATION_CLASS, _
-        ByVal pTokenInfo As IntPtr, _
-        ByVal tokenInfoLength As Integer, _
+    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
+    Public Shared Function GetTokenInformation(
+        ByVal hToken As SafeTokenHandle,
+        ByVal tokenInfoClass As TOKEN_INFORMATION_CLASS,
+        ByVal pTokenInfo As IntPtr,
+        ByVal tokenInfoLength As Integer,
         <Out()> ByRef returnLength As Integer) _
         As <MarshalAs(UnmanagedType.Bool)> Boolean
     End Function
 
     Public Const BCM_SETSHIELD As UInt32 = &H160C
-    <DllImport("user32", CharSet:=CharSet.Auto, SetLastError:=True)> _
-    Public Shared Function SendMessage( _
-        ByVal hWnd As IntPtr, _
-        ByVal Msg As UInt32, _
-        ByVal wParam As Integer, _
+    <DllImport("user32", CharSet:=CharSet.Auto, SetLastError:=True)>
+    Public Shared Function SendMessage(
+        ByVal hWnd As IntPtr,
+        ByVal Msg As UInt32,
+        ByVal wParam As Integer,
         ByVal lParam As IntPtr) _
         As Integer
     End Function
 
-    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True)> _
-    Public Shared Function GetSidSubAuthority( _
-        ByVal pSid As IntPtr, _
+    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
+    Public Shared Function GetSidSubAuthority(
+        ByVal pSid As IntPtr,
         ByVal nSubAuthority As UInt32) _
         As IntPtr
     End Function
@@ -756,7 +777,7 @@ Friend Class LinkHelper
     Private Enum SLGP_FLAGS
         SLGP_SHORTPATH = &H1
         SLGP_UNCPRIORITY = &H2
-         SLGP_RAWPATH = &H4
+        SLGP_RAWPATH = &H4
     End Enum
 
     <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Auto)>
