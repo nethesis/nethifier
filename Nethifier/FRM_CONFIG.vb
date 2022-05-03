@@ -343,29 +343,7 @@ Friend Class FRM_CONFIG
                             'CALL_TIMER.Enabled = True
                         End Try
                         'CALL_TIMER.Enabled = True
-
-                        'Dim webClient As New System.Net.WebClient
-                        ''webClient.Headers.Clear()
-                        ''webClient.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
-                        'WebClient.Credentials = New NetworkCredential(UserName, Password)
-                        ''webClient.Headers.Add("Accept-Encoding", "")
-                        ''WebClient.Headers.Add("User-Agent", Guid.NewGuid().ToString)
-                        ''WebClient.Encoding = System.Text.Encoding.UTF8
-                        'If Not (webClient.IsBusy) Then
-                        'Dim result As String
-                        'Try
-                        'result = WebClient.DownloadString(URL)
-                        'Mylog("ResultCall", result.ToString())
-
-                        'Catch e As WebException
-                        'Mylog("ResultCall", e.Message.ToString())
-                        'MsgBox(e.Message.ToString(), 0, "ResultCall")
-                        'End Try
-                        '   'webClient.Dispose()
-                        'Else
-                        'Mylog("ResultCall", "Webclient Busy")
-                        'End If
-
+                
                     Catch ex As Exception
                         ExceptionManager.Write(ex)
                         Dim DebugPathE As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString(), "nethifier_debug.log")
