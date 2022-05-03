@@ -650,7 +650,8 @@ Partial Class FRM_CONFIG
         Me.CHK_BSX.Size = New System.Drawing.Size(110, 17)
         Me.CHK_BSX.TabIndex = 8
         Me.CHK_BSX.Text = "In basso a sinistra"
-        Me.TIP.SetToolTip(Me.CHK_BSX, "Definisce la posizione del PopUP che compare all'arrivo della chiamata")
+        Me.TIP.SetToolTip(Me.CHK_BSX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
+
         Me.CHK_BSX.UseVisualStyleBackColor = True
         '
         'CHK_ASX
