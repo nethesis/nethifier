@@ -93,8 +93,8 @@ Public Class FRM_NOTIFICATIONS
         End If
         Me.Location = New Point(Screen.PrimaryScreen.WorkingArea.Width - Width, Screen.PrimaryScreen.WorkingArea.Height - ((H + 50) + 0)) '+ (2 * WEB_CONTAINER.Controls.Count)
         If _CONFIG.POPUP_POS = 1 Then Location = New Point(0, 0)
-        If _CONFIG.POPUP_POS = 2 Then Location = New Point(Screen.PrimaryScreen.WorkingArea.Width - Width, 0)
-        If _CONFIG.POPUP_POS = 4 Then Location = New Point(0, Screen.PrimaryScreen.WorkingArea.Height - ((H + 50) + 0))
+        If _CONFIG.POPUP_POS = 2 Then Location = New Point(0, Screen.PrimaryScreen.WorkingArea.Height - ((H + 50) + 0))
+        If _CONFIG.POPUP_POS = 4 Then Location = New Point(Screen.PrimaryScreen.WorkingArea.Width - Width, 0)
         Me.Height = (H + 50)
 
         If Not Me.Visible Then
