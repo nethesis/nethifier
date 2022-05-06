@@ -608,7 +608,7 @@ Partial Class FRM_CONFIG
         Me.GroupBox2.Size = New System.Drawing.Size(392, 66)
         Me.GroupBox2.TabIndex = 12
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Posizione PopUP chiamata"
+        Me.GroupBox2.Text = "Posizione pop-up chiamata"
         '
         'CHK_ADX
         '
@@ -622,7 +622,6 @@ Partial Class FRM_CONFIG
         Me.CHK_ADX.Text = "In alto a destra"
         Me.CHK_ADX.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.TIP.SetToolTip(Me.CHK_ADX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
-
         Me.CHK_ADX.UseVisualStyleBackColor = True
         '
         'CHK_BDX
@@ -639,7 +638,6 @@ Partial Class FRM_CONFIG
         Me.CHK_BDX.Text = "In basso a destra"
         Me.CHK_BDX.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.TIP.SetToolTip(Me.CHK_BDX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
-
         Me.CHK_BDX.UseVisualStyleBackColor = True
         '
         'CHK_BSX
@@ -651,7 +649,6 @@ Partial Class FRM_CONFIG
         Me.CHK_BSX.TabIndex = 8
         Me.CHK_BSX.Text = "In basso a sinistra"
         Me.TIP.SetToolTip(Me.CHK_BSX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
-
         Me.CHK_BSX.UseVisualStyleBackColor = True
         '
         'CHK_ASX
@@ -663,7 +660,6 @@ Partial Class FRM_CONFIG
         Me.CHK_ASX.TabIndex = 7
         Me.CHK_ASX.Text = "In alto a sinistra"
         Me.TIP.SetToolTip(Me.CHK_ASX, "Definisce la posizione del pop-up che compare all'arrivo della chiamata")
-
         Me.CHK_ASX.UseVisualStyleBackColor = True
         '
         'GroupBox1
@@ -717,9 +713,8 @@ Partial Class FRM_CONFIG
         Me.CHK_ONEKEY.Size = New System.Drawing.Size(308, 17)
         Me.CHK_ONEKEY.TabIndex = 6
         Me.CHK_ONEKEY.Text = "Usa un solo tasto per rispondere e per terminare la chiamata"
-        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo la spunta, la suoneria sarà esguita una volta sola all'arrivo della chia" &
-
-        "mata")
+        Me.TIP.SetToolTip(Me.CHK_ONEKEY, "Togliendo la spunta, la suoneria sarà esguita una volta sola all'arrivo della chi" &
+        "amata")
         Me.CHK_ONEKEY.UseVisualStyleBackColor = True
         '
         'CHK_SUONERIA
