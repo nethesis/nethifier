@@ -209,6 +209,10 @@ Public Class FRM_NOTIFICATIONS
             Return False
         End If
 
+        If _CONFIG.POPUP_POS = 0 Then
+            Return False
+        End If
+
         Dim Notification As New WebBrowser
         Me.Width = Width
 
