@@ -19,3 +19,12 @@ C:\Users\Utente\source\repos\nethifier-220222\NethDialer\obj\Debug\NethDialer.vb
 C:\Users\Utente\source\repos\nethifier-220222\NethDialer\obj\Debug\NethDialer.exe
 C:\Users\Utente\source\repos\nethifier-220222\NethDialer\obj\Debug\NethDialer.xml
 C:\Users\Utente\source\repos\nethifier-220222\NethDialer\obj\Debug\NethDialer.pdb
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.AssemblyReference.cache
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.Form1.resources
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.Resources.resources
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.GenerateResource.cache
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.vbproj.CoreCompileInputs.cache
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.TrustInfo.xml
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.exe
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.xml
+C:\Users\Utente\Source\Repos\nethifier\NethDialer\obj\Debug\NethDialer.pdb

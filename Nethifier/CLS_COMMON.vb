@@ -72,6 +72,9 @@ Friend Class Config
     Public PARAM_CHECK As Boolean = False
     Public PARAM_MODE As String
     Public POPUP_POS As Int32 = 0
+    Public POPUP_INOLTRO As Boolean = False
+    Public POPUP_NEW_CALL As Boolean = False
+    Public POPUP_INTERNI As Boolean = False
 
     Public Commands As Hashtable = New Hashtable
     Public LANGUAGE As String = "default"
@@ -116,6 +119,8 @@ Friend Class Config
         "PARAM_CHECK=" & CStr(IIf(Me.PARAM_CHECK, "1", "0")) & vbCrLf &
         "PARAM_MODE=" & Me.PARAM_MODE & vbCrLf &
         "POPUP_POS=" & Me.POPUP_POS & vbCrLf &
+        "POPUP_INOLTRO=" & CStr(IIf(Me.POPUP_INOLTRO, "1", "0")) & vbCrLf &
+        "POPUP_INTERNI=" & CStr(IIf(Me.POPUP_INTERNI, "1", "0")) & vbCrLf &
         "LANGUAGE=" & Me.LANGUAGE & vbCrLf &
         "HOTKEY_MOD_SPEED_DIAL=" & Me.HOTKEY_MOD_SPEED_DIAL & vbCrLf &
         "HOTKEY_MOD_REDIAL=" & Me.HOTKEY_MOD_REDIAL & vbCrLf &
@@ -206,6 +211,10 @@ Friend Class Config
                         P_POS = True
                         Me.POPUP_POS = CInt(Val)
                         X += 1
+                    ElseIf Key.StartsWith("POPUP_INOLTRO=") Then
+                        Me.POPUP_INOLTRO = (Val = "1")
+                    ElseIf Key.StartsWith("POPUP_INTERNI=") Then
+                        Me.POPUP_INTERNI = (Val = "1")
                     ElseIf Key.StartsWith("LANGUAGE=") Then
                         Me.LANGUAGE = Val
                         X += 1

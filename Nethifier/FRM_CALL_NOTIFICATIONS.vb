@@ -24,7 +24,6 @@ Friend NotInheritable Class FRM_CALL_NOTIFICATIONS
         Me.UserLogin = UserLogin
         Me.NethDebug = NethDebug
 
-
         ExceptionManager = New ExceptionManager
     End Sub
 

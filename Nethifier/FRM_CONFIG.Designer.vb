@@ -97,6 +97,8 @@ Partial Class FRM_CONFIG
         Me.TAB_007 = New System.Windows.Forms.TabPage()
         Me.CHK_PARAM = New System.Windows.Forms.CheckBox()
         Me.GRP_PARAMS = New System.Windows.Forms.GroupBox()
+        Me.CHK_INTERNI = New System.Windows.Forms.CheckBox()
+        Me.CHK_PopupInoltro = New System.Windows.Forms.CheckBox()
         Me.CMB_PARAM = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.BUT_SAVE = New System.Windows.Forms.Button()
@@ -831,6 +833,8 @@ Partial Class FRM_CONFIG
         '
         'GRP_PARAMS
         '
+        Me.GRP_PARAMS.Controls.Add(Me.CHK_INTERNI)
+        Me.GRP_PARAMS.Controls.Add(Me.CHK_PopupInoltro)
         Me.GRP_PARAMS.Controls.Add(Me.CMB_PARAM)
         Me.GRP_PARAMS.Controls.Add(Me.Label6)
         Me.GRP_PARAMS.Enabled = False
@@ -839,6 +843,29 @@ Partial Class FRM_CONFIG
         Me.GRP_PARAMS.Size = New System.Drawing.Size(392, 98)
         Me.GRP_PARAMS.TabIndex = 9
         Me.GRP_PARAMS.TabStop = False
+        '
+        'CHK_INTERNI
+        '
+        Me.CHK_INTERNI.AutoSize = True
+        Me.CHK_INTERNI.Location = New System.Drawing.Point(54, 67)
+        Me.CHK_INTERNI.Name = "CHK_INTERNI"
+        Me.CHK_INTERNI.Size = New System.Drawing.Size(219, 17)
+        Me.CHK_INTERNI.TabIndex = 8
+        Me.CHK_INTERNI.Text = "Popup anche per numeri inferiori a 6 cifre"
+        Me.TIP.SetToolTip(Me.CHK_INTERNI, "Togliendo il check, verranno fatte chiamate al CRM anche per numeri più corti di " &
+        "6 cifre (tipicamente interni)")
+        Me.CHK_INTERNI.UseVisualStyleBackColor = True
+        '
+        'CHK_PopupInoltro
+        '
+        Me.CHK_PopupInoltro.AutoSize = True
+        Me.CHK_PopupInoltro.Location = New System.Drawing.Point(54, 44)
+        Me.CHK_PopupInoltro.Name = "CHK_PopupInoltro"
+        Me.CHK_PopupInoltro.Size = New System.Drawing.Size(192, 17)
+        Me.CHK_PopupInoltro.TabIndex = 7
+        Me.CHK_PopupInoltro.Text = "Popup anche con inoltro telefonate"
+        Me.TIP.SetToolTip(Me.CHK_PopupInoltro, "Togliendo il check, verranno fatte chiamate al CRM anche per chiamate inoltrate")
+        Me.CHK_PopupInoltro.UseVisualStyleBackColor = True
         '
         'CMB_PARAM
         '
@@ -1038,4 +1065,6 @@ Partial Class FRM_CONFIG
     Friend WithEvents CHK_ASX As CheckBox
     Friend WithEvents CHK_BDX As CheckBox
     Friend WithEvents CHK_ADX As CheckBox
+    Friend WithEvents CHK_PopupInoltro As CheckBox
+    Friend WithEvents CHK_INTERNI As CheckBox
 End Class
