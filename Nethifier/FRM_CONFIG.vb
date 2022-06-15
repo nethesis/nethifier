@@ -761,6 +761,9 @@ Friend Class FRM_CONFIG
             CHK_PARAM.Checked = .PARAM_CHECK
             CMB_PARAM.Text = .PARAM_MODE
             Select Case .POPUP_POS
+                Case 0
+                    CHK_BDX.Checked = False
+                    CHK_BDX.Checked = False
                 Case 1
                     CHK_ASX.Checked = True
                     CHK_ASX.Checked = True
@@ -2357,7 +2360,6 @@ Friend Class FRM_CONFIG
         CHK_ADX.Checked = False
         CHK_BDX.Checked = False
     End Sub
-
 
     Private Sub CHK_ADX_CheckedChanged(sender As Object, e As EventArgs) Handles CHK_ADX.CheckedChanged
         CHK_BSX.Checked = False
