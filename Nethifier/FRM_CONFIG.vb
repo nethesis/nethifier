@@ -408,7 +408,7 @@ Friend Class FRM_CONFIG
                     Dim Colo As String = St(1).ToLower.Trim
 
                     If Colo.StartsWith("{""setcolorled"":") Then
-                        LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_"))
+                        LED(Colo.Substring(16).Replace("""}", "").Replace(":", "_").Replace("|", "_"))
                     End If
                 End If
 
@@ -422,7 +422,7 @@ Friend Class FRM_CONFIG
                     M = Colors(Colors.Length - 1).ToLower.Substring(16).Replace("""}", "")
                     LED(M.Replace(":", "_"))
                 Else
-                    LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_"))
+                    LED(M.ToLower.Substring(16).Replace("""}", "").Replace(":", "_").Replace("|", "_"))
                 End If
 
             ElseIf Message.StartsWith("{""ring"":") Then
