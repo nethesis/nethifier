@@ -180,6 +180,7 @@ namespace NethHeadPhone
             string data = "";
             try
             {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
                 WebRequest s = WebRequest.Create(Url);
                 s.Method = Method;
                 s.Headers.Add("Authorization", username + ":" + Token);
@@ -219,6 +220,7 @@ namespace NethHeadPhone
         private string GetToken() 
         {
             //System.Net.ServicePointManager.ServerCertificateValidationCallback = AddressOf CertificateHandler;
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
             string Nonce="";
             string postdata;
             string Url = "https://" + host + "/webrest/authentication/login";

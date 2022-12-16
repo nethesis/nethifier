@@ -22,6 +22,12 @@
         "Entry"
         {
         "MsmKey" = "8:_21166E511CCC03B6B2CBFF26DA5689D1"
+        "OwnerKey" = "8:_5E307ADE3F02D0689FD031D245C73669"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_21166E511CCC03B6B2CBFF26DA5689D1"
         "OwnerKey" = "8:_8EE86846214D44EF867E50D199EE914F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -107,6 +113,12 @@
         {
         "MsmKey" = "8:_5C55F8D936468D969411A166A8AB3369"
         "OwnerKey" = "8:_568E2A6C8C5748B78EC0139888628C51"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5E307ADE3F02D0689FD031D245C73669"
+        "OwnerKey" = "8:_8EE86846214D44EF867E50D199EE914F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -323,6 +335,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_8EE86846214D44EF867E50D199EE914F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_5E307ADE3F02D0689FD031D245C73669"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -731,16 +749,37 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:NethUtilities, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:NethUtilities, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5C55F8D936468D969411A166A8AB3369"
-                    {
-                    "Name" = "8:NethUtilities.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:NethUtilities.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_FBF1E6A289C24417A5F550110C28782B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5E307ADE3F02D0689FD031D245C73669"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:SharpLib.Hid, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                }
+            "SourcePath" = "8:SharpLib.Hid.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FBF1E6A289C24417A5F550110C28782B"
@@ -1415,15 +1454,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Nethifier"
-        "ProductCode" = "8:{468A4BF0-E9C5-4764-A00D-8194C8DA2F38}"
-        "PackageCode" = "8:{CF6FF061-6130-4BB1-B8CF-EF2A37FD0E97}"
+        "ProductCode" = "8:{10294D4C-EDBE-4812-AB64-6F45DBAD78AE}"
+        "PackageCode" = "8:{EB9C1169-C6B1-4981-9099-F1299552430E}"
         "UpgradeCode" = "8:{7D6C9C50-009C-4186-851F-6205DB6C96A4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.1.2"
+        "ProductVersion" = "8:3.1.3"
         "Manufacturer" = "8:Nethesis"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
